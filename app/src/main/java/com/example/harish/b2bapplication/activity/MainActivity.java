@@ -71,8 +71,8 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                 title = getString(R.string.title_home);
                 break;
             case 3:
-                fragment = new SignupFragment();
-                title = getString(R.string.title_home);
+                fragment = new SigninFragment();
+                title = "Signin";
                 break;
 
 
