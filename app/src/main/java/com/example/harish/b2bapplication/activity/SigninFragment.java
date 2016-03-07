@@ -6,9 +6,12 @@ import android.content.Context;
 import android.content.Entity;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.harish.b2bapplication.R;
+import com.example.harish.b2bapplication.model.NavDrawerItem;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -31,6 +35,7 @@ import org.w3c.dom.Text;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Map;
 
 
@@ -44,18 +49,17 @@ public class SigninFragment extends Fragment {
     private EditText _password = null;
     private EditText _mobile = null;
     private Button _signin = null;
+    private Button _sign  = null;
     private TextView _signup = null;
+    private View  franavdrawer = null;
+    private DrawerLayout drawerLayout = null;
 
     private String email ;
     private String moblie ;
     private String password ;
-    private String passwordconfrm;
     private ProgressDialog progressdialog;
-    private Map user;
-    private Map userparamas;
 
     private FileOutputStream fos;
-    private  String ackkey;
 
     public SigninFragment() {
         // Required empty public constructor
@@ -75,7 +79,10 @@ public class SigninFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
          View rootView = inflater.inflate(R.layout.fragment_signin, container, false);
-         //ButterKnife.inject(rootView);
+         franavdrawer = inflater.inflate(R.layout.fragment_navigation_drawer,container,false);
+
+         _sign =  (Button)franavdrawer.findViewById(R.id.btn_sign);
+
          _email = (EditText)rootView.findViewById(R.id.input_email);
          _mobile = (EditText)rootView.findViewById(R.id.input_mobile);
          _password = (EditText)rootView.findViewById(R.id.input_password);
@@ -89,8 +96,6 @@ public class SigninFragment extends Fragment {
                 email = _email.getText().toString();
                 moblie = _mobile.getText().toString();
                 password = _password.getText().toString();
-
-
                 signin();
             }
         });
@@ -98,14 +103,10 @@ public class SigninFragment extends Fragment {
         _signup.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-
                 FragmentManager fragmentManager = getFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.container_body, new SignupFragment());
                 fragmentTransaction.commit();
-
-                // set the toolbar title
-                //getSupportActionBar().setTitle(title);
 
             }
         });
@@ -150,8 +151,6 @@ public class SigninFragment extends Fragment {
 
         new android.os.Handler().postDelayed(
                 new Runnable() {
-
-
                     public void run() {
                         try {
                             JSONObject holder = new JSONObject();
@@ -171,7 +170,7 @@ public class SigninFragment extends Fragment {
 
                             // Http Post for sign_in and receving token and wirting in internal storage
 
-                            HttpPost httpPost = new HttpPost("http://116.202.172.39:3000/users/sign_in");
+                            HttpPost httpPost = new HttpPost("http://116.202.80.141:3000/users/sign_in");
                             httpPost.setEntity(new StringEntity(userObj.toString()));
                             httpPost.setHeader("Accept", "application/json");
                             httpPost.setHeader("Content-type", "application/json");
@@ -184,10 +183,16 @@ public class SigninFragment extends Fragment {
 
                             if(temp1.has("success")) {
                                 if (temp1.getString("success").equals("true")) {
-                                    fos = getActivity().openFileOutput("Ackfile", Context.MODE_PRIVATE);
-                                    new StoreAck().writeFile(fos, temp1.getString("token"));
+                                    Context c = getActivity().getApplicationContext();
+                                    new StoreAck().writeFile(c, temp1.getString("token"));
                                     onSigninSuccess();
                                     progressdialog.dismiss();
+
+                                    //getActivity().setTitle("Signout");
+
+
+
+
                                 }
                             }else
                             {
@@ -206,8 +211,13 @@ public class SigninFragment extends Fragment {
 
     public void onSigninSuccess() {
         _signin.setEnabled(true);
-        // setResult(RESULT_OK, null);
-        // finish();
+        Log.d("----------", _sign.getText().toString());
+        _sign.setText("Log_out");
+        franavdrawer.setVisibility(View.VISIBLE);
+        franavdrawer.invalidate();
+
+
+
         return;
     }
 

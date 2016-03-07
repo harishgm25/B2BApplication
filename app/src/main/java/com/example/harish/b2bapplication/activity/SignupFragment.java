@@ -168,8 +168,8 @@ public class SignupFragment extends Fragment {
 
                             if(temp1.has("success")) {
                                 if (temp1.getString("success").equals("true")) {
-                                    fos = getActivity().openFileOutput("Ackfile", Context.MODE_PRIVATE);
-                                    new StoreAck().writeFile(fos, temp1.getString("token"));
+                                    Context c = getActivity().getApplicationContext();
+                                    new StoreAck().writeFile(c, temp1.getString("token"));
                                     onSignupSuccess();
                                     progressdialog.dismiss();
                                 }

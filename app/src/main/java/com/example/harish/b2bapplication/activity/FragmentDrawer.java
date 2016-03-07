@@ -16,6 +16,7 @@ package com.example.harish.b2bapplication.activity;
         import android.view.MotionEvent;
         import android.view.View;
         import android.view.ViewGroup;
+        import android.widget.Button;
 
         import java.util.ArrayList;
         import java.util.List;
@@ -100,12 +101,23 @@ public class FragmentDrawer extends Fragment {
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
                 getActivity().invalidateOptionsMenu();
+                String ack = new StoreAck().readFile(getActivity().getApplicationContext());
+                Button sign = (Button)drawerView.findViewById(R.id.btn_sign);
+                if(ack!=null)
+                   sign.setText("Logout");
+                else
+                    sign.setText("SignIn");
+
+
+
             }
 
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
                 getActivity().invalidateOptionsMenu();
+
+
             }
 
             @Override
