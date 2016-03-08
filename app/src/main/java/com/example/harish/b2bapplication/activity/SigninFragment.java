@@ -152,6 +152,7 @@ public class SigninFragment extends Fragment {
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
+                        JSONObject temp1;
                         try {
                             JSONObject holder = new JSONObject();
                             JSONObject userObj = new JSONObject();
@@ -170,7 +171,7 @@ public class SigninFragment extends Fragment {
 
                             // Http Post for sign_in and receving token and wirting in internal storage
 
-                            HttpPost httpPost = new HttpPost("http://116.202.80.141:3000/users/sign_in");
+                            HttpPost httpPost = new HttpPost("http://116.202.152.62:3000/users/sign_in");
                             httpPost.setEntity(new StringEntity(userObj.toString()));
                             httpPost.setHeader("Accept", "application/json");
                             httpPost.setHeader("Content-type", "application/json");
@@ -178,20 +179,15 @@ public class SigninFragment extends Fragment {
                             Log.d("Http Post Response:", response.toString());
 
                             String json = EntityUtils.toString(response.getEntity());
-                            JSONObject temp1 = new JSONObject(json);
+                            temp1 = new JSONObject(json);
                             Log.d("Response status >>>>>>>", temp1.toString());
 
                             if(temp1.has("success")) {
                                 if (temp1.getString("success").equals("true")) {
                                     Context c = getActivity().getApplicationContext();
-                                    new StoreAck().writeFile(c, temp1.getString("token"));
+                                    new StoreAck().writeFile(c,temp1);
                                     onSigninSuccess();
                                     progressdialog.dismiss();
-
-                                    //getActivity().setTitle("Signout");
-
-
-
 
                                 }
                             }else
@@ -202,8 +198,18 @@ public class SigninFragment extends Fragment {
 
 
 
-                        }catch (IOException e){e.printStackTrace();}
-                        catch (JSONException e) {e.printStackTrace();}
+                        }catch (IOException e){e.printStackTrace();
+                            progressdialog.dismiss();
+                            onSigninFailed("error");
+                        }
+                        catch (JSONException e) {e.printStackTrace();
+                            progressdialog.dismiss();
+                            onSigninFailed("error");
+                        }
+                        catch (Exception e) {e.printStackTrace();
+                            progressdialog.dismiss();
+                            onSigninFailed("error");
+                        }
                     }
                 }, 3000);
     }

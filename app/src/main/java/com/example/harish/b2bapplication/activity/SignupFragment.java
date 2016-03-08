@@ -10,9 +10,11 @@ import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.util.Log;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.harish.b2bapplication.R;
@@ -35,7 +37,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -53,12 +57,14 @@ public class SignupFragment extends Fragment {
 
     private String email ;
     private String moblie ;
+    private  String rollOption;
     private String password ;
     private String passwordconfrm;
     private ProgressDialog progressdialog;
     private Map user;
     private Map userparamas;
     private FileOutputStream fos;
+    private Spinner roll;
 
     public SignupFragment() {
         // Required empty public constructor
@@ -85,11 +91,23 @@ public class SignupFragment extends Fragment {
          _passwordconfrm = (EditText)rootView.findViewById(R.id.input_passwordcomform);
          _signup = (Button)rootView.findViewById(R.id.btn_signup);
 
+         // Filling the Spinner
+           roll = (Spinner) rootView.findViewById(R.id.roll);
+           String [] rolls = {"Manufacture","WholeSeller","Retailer"};
+            ArrayAdapter<String> LTRadapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, rolls);
+            LTRadapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+            roll.setAdapter(LTRadapter);
+
+
+
+
+
            _signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 email = _email.getText().toString();
                 moblie = _mobile.getText().toString();
+                rollOption = roll.getSelectedItem().toString();
                 password = _password.getText().toString();
                 passwordconfrm = _passwordconfrm.getText().toString();
 
@@ -147,6 +165,7 @@ public class SignupFragment extends Fragment {
 
                             holder.put("email", email);
                             holder.put("mobile", moblie);
+                            holder.put("roll",rollOption);
                             holder.put("password", password);
                             holder.put("password_confirmation", passwordconfrm);
 
@@ -155,7 +174,7 @@ public class SignupFragment extends Fragment {
                                 e.printStackTrace();
                             }
                             // Http Post for sign_up and receving token and wirting in internal storage
-                            HttpPost httpPost = new HttpPost("http://116.202.172.39:3000/users");
+                            HttpPost httpPost = new HttpPost("http://116.202.152.62:3000/users");
                             httpPost.setEntity(new StringEntity(userObj.toString()));
                             httpPost.setHeader("Accept", "application/json");
                             httpPost.setHeader("Content-type", "application/json");
@@ -169,7 +188,7 @@ public class SignupFragment extends Fragment {
                             if(temp1.has("success")) {
                                 if (temp1.getString("success").equals("true")) {
                                     Context c = getActivity().getApplicationContext();
-                                    new StoreAck().writeFile(c, temp1.getString("token"));
+                                    new StoreAck().writeFile(c, temp1);
                                     onSignupSuccess();
                                     progressdialog.dismiss();
                                 }
@@ -220,6 +239,7 @@ public class SignupFragment extends Fragment {
         } else {
             _email.setError(null);
         }
+
 
         if (password.isEmpty() || password.length() < 8 || password.length() > 10) {
             _password.setError("between 8 and 10 alphanumeric characters");

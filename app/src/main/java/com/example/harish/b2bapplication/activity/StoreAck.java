@@ -7,6 +7,8 @@ import android.view.View;
 import com.example.harish.b2bapplication.R;
 import android.view.LayoutInflater;
 
+import org.json.JSONObject;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -26,34 +28,44 @@ public class StoreAck {
     FileInputStream inputStream;
     View rootView;
 
-    public void writeFile(Context c,String ack)
+    public void writeFile(Context c, JSONObject jObj)
     {
         try {
-            outputStream = c.openFileOutput(filename,c.MODE_PRIVATE);
+            String ack = jObj.getString("token");
+            String roll = jObj.getString("roll");
+            String  email = jObj.getString("email");
+            outputStream = c.openFileOutput(filename, c.MODE_PRIVATE);
             outputStream.write(ack.getBytes());
+            outputStream.write("\n".getBytes());
+            outputStream.write(email.getBytes());
+            outputStream.write("\n".getBytes());
+            outputStream.write(roll.getBytes());
+            outputStream.write("\n".getBytes());
             outputStream.close();
             Log.d("<<<<<<<<<<<<<<<<<<<<<", "Ack in file");
 
 
 
-        }catch (IOException e){e.printStackTrace();}
+        }catch (Exception e){e.printStackTrace();}
 
 
     }
 
-    public String readFile(Context c)
+    public String[] readFile(Context c)
     {
         try {
             inputStream = c.openFileInput(filename);
             BufferedReader buffer = new BufferedReader( new InputStreamReader(inputStream));
-            String line= null;
+            String line  [] = new String[3];
             String temp = null;
+            int i = 0;
             while((temp=buffer.readLine())!= null )
             {
-                line = temp;
+                line[i] = temp;
+                i++;
             }
 
-            Log.d(line, ">>>>>>>>>>>>>>>>>>>>>>Ack in file");
+            Log.d(line.toString(), ">>>>>>>>>>>>>>>>>>>>>>Ack in file");
 
             inputStream.close();
             return line;
@@ -67,6 +79,18 @@ public class StoreAck {
 
         }
 
+
+    }
+
+    public void DeleteFile(Context c)
+    {
+
+            boolean flag = c.deleteFile(filename);
+            if (flag == true) {
+                Log.d("true", ">>>>>>>>>>>>>>>>>>>>>>Ack in deleted");
+            } else {
+                Log.d("false", ">>>>>>>>>>>>>>>>>>>>>>Ack in deleted");
+            }
 
     }
 

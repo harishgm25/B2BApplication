@@ -27,6 +27,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
         this.context = context;
         inflater = LayoutInflater.from(context);
         this.data = data;
+
     }
 
     public void delete(int position) {

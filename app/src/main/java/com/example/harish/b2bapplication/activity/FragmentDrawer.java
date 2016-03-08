@@ -17,6 +17,7 @@ package com.example.harish.b2bapplication.activity;
         import android.view.View;
         import android.view.ViewGroup;
         import android.widget.Button;
+        import android.widget.TextView;
 
         import java.util.ArrayList;
         import java.util.List;
@@ -72,7 +73,6 @@ public class FragmentDrawer extends Fragment {
         // Inflating view layout
         View layout = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
         recyclerView = (RecyclerView) layout.findViewById(R.id.drawerList);
-
         adapter = new NavigationDrawerAdapter(getActivity(), getData());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -101,14 +101,6 @@ public class FragmentDrawer extends Fragment {
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
                 getActivity().invalidateOptionsMenu();
-                String ack = new StoreAck().readFile(getActivity().getApplicationContext());
-                Button sign = (Button)drawerView.findViewById(R.id.btn_sign);
-                if(ack!=null)
-                   sign.setText("Logout");
-                else
-                    sign.setText("SignIn");
-
-
 
             }
 
@@ -117,13 +109,26 @@ public class FragmentDrawer extends Fragment {
                 super.onDrawerClosed(drawerView);
                 getActivity().invalidateOptionsMenu();
 
-
             }
 
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 super.onDrawerSlide(drawerView, slideOffset);
                 toolbar.setAlpha(1 - slideOffset / 2);
+                String userdata [] = new StoreAck().readFile(getActivity().getApplicationContext());
+                Button sign = (Button)drawerView.findViewById(R.id.btn_sign);
+                TextView email = (TextView)drawerView.findViewById(R.id.email);
+                TextView roll = (TextView)drawerView.findViewById(R.id.roll);
+                if(userdata !=null) {
+                    sign.setText("Logout");
+                    email.setText(userdata[1]);
+                    roll.setText(userdata[2]);
+                }
+                else {
+                    sign.setText("SignIn");
+                    email.setText("Email");
+                    roll.setText("Anonynomous User");
+                }
             }
         };
 
