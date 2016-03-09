@@ -15,9 +15,6 @@ import java.util.List;
 import com.example.harish.b2bapplication.model.NavDrawerItem;
 import com.example.harish.b2bapplication.R;
 
-/**
- * Created by Ravi Tamada on 12-03-2015.
- */
 public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDrawerAdapter.MyViewHolder> {
     List<NavDrawerItem> data = Collections.emptyList();
     private LayoutInflater inflater;

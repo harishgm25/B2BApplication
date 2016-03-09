@@ -37,6 +37,7 @@ public class FragmentDrawer extends Fragment {
     private View containerView;
     private static String[] titles = null;
     private FragmentDrawerListener drawerListener;
+    private static  Button sign;
 
     public FragmentDrawer() {
 
@@ -48,14 +49,12 @@ public class FragmentDrawer extends Fragment {
 
     public static List<NavDrawerItem> getData() {
         List<NavDrawerItem> data = new ArrayList<>();
-
-
-        // preparing navigation drawer items
-        for (int i = 0; i < titles.length; i++) {
-            NavDrawerItem navItem = new NavDrawerItem();
-            navItem.setTitle(titles[i]);
-            data.add(navItem);
-        }
+            // preparing navigation drawer items
+            for (int i = 0; i < titles.length; i++) {
+                NavDrawerItem navItem = new NavDrawerItem();
+                navItem.setTitle(titles[i]);
+                data.add(navItem);
+            }
         return data;
     }
 
@@ -65,6 +64,8 @@ public class FragmentDrawer extends Fragment {
         setFragment( new HomeFragment());
         // drawer labels
         titles = getActivity().getResources().getStringArray(R.array.nav_drawer_labels);
+
+
     }
 
     @Override
@@ -72,6 +73,8 @@ public class FragmentDrawer extends Fragment {
                              Bundle savedInstanceState) {
         // Inflating view layout
         View layout = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
+        sign = (Button)layout.findViewById(R.id.btn_sign);
+
         recyclerView = (RecyclerView) layout.findViewById(R.id.drawerList);
         adapter = new NavigationDrawerAdapter(getActivity(), getData());
         recyclerView.setAdapter(adapter);
@@ -116,18 +119,24 @@ public class FragmentDrawer extends Fragment {
                 super.onDrawerSlide(drawerView, slideOffset);
                 toolbar.setAlpha(1 - slideOffset / 2);
                 String userdata [] = new StoreAck().readFile(getActivity().getApplicationContext());
-                Button sign = (Button)drawerView.findViewById(R.id.btn_sign);
+                sign = (Button)drawerView.findViewById(R.id.btn_sign);
                 TextView email = (TextView)drawerView.findViewById(R.id.email);
                 TextView roll = (TextView)drawerView.findViewById(R.id.roll);
                 if(userdata !=null) {
                     sign.setText("Logout");
                     email.setText(userdata[1]);
                     roll.setText(userdata[2]);
+                    adapter = new NavigationDrawerAdapter(getActivity(),getData()   );
+                    recyclerView.setAdapter(adapter);
                 }
                 else {
-                    sign.setText("SignIn");
+                    sign.setText("Signin");
                     email.setText("Email");
                     roll.setText("Anonynomous User");
+                    List<NavDrawerItem> data = new ArrayList<>();
+                    adapter = new NavigationDrawerAdapter(getActivity(),data);
+                    recyclerView.setAdapter(adapter);
+                    recyclerView.refreshDrawableState();
                 }
             }
         };
