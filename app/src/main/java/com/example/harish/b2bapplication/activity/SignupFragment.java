@@ -174,7 +174,7 @@ public class SignupFragment extends Fragment {
                                 e.printStackTrace();
                             }
                             // Http Post for sign_up and receving token and wirting in internal storage
-                            HttpPost httpPost = new HttpPost("http://116.202.152.62:3000/users");
+                            HttpPost httpPost = new HttpPost("http://173.255.199.232:8002/users");
                             httpPost.setEntity(new StringEntity(userObj.toString()));
                             httpPost.setHeader("Accept", "application/json");
                             httpPost.setHeader("Content-type", "application/json");

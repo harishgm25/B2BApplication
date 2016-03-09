@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
 import android.widget.Toast;
 
 import com.example.harish.b2bapplication.R;
@@ -31,11 +32,10 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
+
+        //DrawerLayout drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+
         super.onPrepareOptionsMenu(menu);
-
-        menu.getItem(0).setVisible(false);
-        menu.getItem(1).setVisible(false);
-
         return true;
 
     }
@@ -64,8 +64,6 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                 {
                     new StoreAck().DeleteFile(getApplicationContext());
                     drawerLayout.closeDrawer(Gravity.LEFT); // closing DrawerLayOut Manually
-                    RecyclerView view = (RecyclerView)findViewById(R.id.drawerList);
-
                 }
                 else
                 {
@@ -78,9 +76,6 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                     drawerLayout.closeDrawer(Gravity.LEFT); // closing DrawerLayOut Manually
 
                 }
-
-
-
             }
         });
 
@@ -90,7 +85,10 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
+
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
+
 
         return true;
     }

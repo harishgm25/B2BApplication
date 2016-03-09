@@ -171,7 +171,7 @@ public class SigninFragment extends Fragment {
 
                             // Http Post for sign_in and receving token and wirting in internal storage
 
-                            HttpPost httpPost = new HttpPost("http://116.202.152.62:3000/users/sign_in");
+                            HttpPost httpPost = new HttpPost("http://173.255.199.232:8002/users/sign_in");
                             httpPost.setEntity(new StringEntity(userObj.toString()));
                             httpPost.setHeader("Accept", "application/json");
                             httpPost.setHeader("Content-type", "application/json");

@@ -81,9 +81,9 @@
             android:id="@+id/btn_sign"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:padding="12dp"/>
+            <!--android:text="signup" -->
 
-            android:padding="12dp"
-            android:text="signup"/>
     </RelativeLayout>
 
 
