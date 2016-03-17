@@ -1,0 +1,39 @@
+<resources>
+    <string name="app_name">B2BApplication</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_search">Search</string>
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
+
+    <string name="nav_item_category1">Product Category1</string>
+    <string name="nav_item_category2">Product Category2</string>
+    <string name="nav_item_category3">Product Category3</string>
+    <string name="nav_item_category4">Product Category4</string>
+    <!-- navigation drawer item labels  -->
+    <string-array name="nav_drawer_labels">
+        <item>@string/nav_item_category1</item>
+        <item>@string/nav_item_category2</item>
+        <item>@string/nav_item_category3</item>
+        <item>@string/nav_item_category4</item>
+    </string-array>
+
+    <string name="title_Product_Category1">Product Category1</string>
+    <string name="title_Product_Category2">Product Category2</string>
+    <string name="title_Product_Category3">Product Category3</string>
+    <string name="title_Product_Category4">Product Category4</string>
+
+    <!--   http://173.255.199.232:8002/    -->
+    <string-array name="ip_address">
+
+          <item>http://116.202.176.207:3000/</item>
+    </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+
+
+
+
+</resources>
