@@ -1,6 +1,7 @@
 package com.example.harish.b2bapplication.activity;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -24,6 +25,9 @@ import com.example.harish.b2bapplication.R;
 public class ManufactureFragment extends Fragment {
 
 
+    private AlertDialog.Builder builder;
+
+
 
     public ManufactureFragment() {
         // Required empty public constructor
@@ -44,7 +48,9 @@ public class ManufactureFragment extends Fragment {
         //checking for new signup for profile filling
         if(isnewsignup)
         {
+            isnewsignup = false;
             showDialog();
+            getArguments().remove("newsignup");
         }
 
 
@@ -65,14 +71,15 @@ public class ManufactureFragment extends Fragment {
 
     public  void  showDialog()
     {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder = new AlertDialog.Builder(getContext());
         builder.setCancelable(false);
+        builder.setTitle("Wish to Complete the Profile");
          final EditText input = new EditText(getContext());
-
-        builder.setPositiveButton("Wish to Complete the Profile", new DialogInterface.OnClickListener() {
+            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-               callProfileFragment();
+                dialog.cancel();
+                callProfileFragment();
 
             }
         });
@@ -87,14 +94,18 @@ public class ManufactureFragment extends Fragment {
         builder.show();
 
 
+
     }
 
     public void callProfileFragment()
     {
+
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.replace(R.id.container_body, new ProfileFragment());
         fragmentTransaction.commit();
+        builder.setCancelable(true);
+
     }
 
 }

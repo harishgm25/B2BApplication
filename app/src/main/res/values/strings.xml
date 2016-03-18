@@ -25,7 +25,7 @@
     <!--   http://173.255.199.232:8002/    -->
     <string-array name="ip_address">
 
-          <item>http://116.202.176.207:3000/</item>
+          <item>http://116.202.140.0:3000/</item>
     </string-array>
 
     <!-- TODO: Remove or change this placeholder text -->

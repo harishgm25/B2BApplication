@@ -70,15 +70,16 @@ public class OTPFragment extends Fragment implements VerificationListener {
                 if (connectionDetector.isConnectingToInternet()) {
                     Config config = SendOtpVerification.config().context(getContext().getApplicationContext())
                             .build();
-                  mVerification = SendOtpVerification.createSmsVerification(config, _mobile.getText().toString(), otpFragment, "91", "");
-                  mVerification.initiate();
-                    _verifyotp.setEnabled(false);
+                //  mVerification = SendOtpVerification.createSmsVerification(config, _mobile.getText().toString(), otpFragment, "91", "");
+                 // mVerification.initiate();
+                    onVerified("hello");
+               /*     _verifyotp.setEnabled(false);
                     progressDialog = new ProgressDialog(getActivity());
                     progressDialog.setCancelable(false);
                     progressDialog.setIndeterminate(false);
                     progressDialog.setMessage("Sending OTP");
                     progressDialog.show();
-                    timerDelayRemoveDialog(5000, progressDialog);
+                    timerDelayRemoveDialog(5000, progressDialog);*/
 
 
                 }
@@ -168,7 +169,7 @@ public class OTPFragment extends Fragment implements VerificationListener {
 
     @Override
     public void onVerified(String response) {
-        progressDialog.dismiss();
+//        progressDialog.dismiss();
         Toast.makeText(getContext(), "OTP Verifyed", Toast.LENGTH_LONG).show();
         SignupFragment signupFragment = new SignupFragment();
         Bundle arg = new Bundle();

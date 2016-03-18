@@ -189,7 +189,7 @@ public class SignupFragment extends Fragment {
                                 onSignupFailed(temp1.getString("errors"));
                             }
 
-                            onSignupSuccess();
+                            //onSignupSuccess();
                             // onSignupFailed();
                             progressdialog.dismiss();
                         }catch (IOException e){e.printStackTrace();}
