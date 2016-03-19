@@ -80,7 +80,7 @@ public class SigninFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_signin, container, false);
         franavdrawer = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
-        _sign = (Button) franavdrawer.findViewById(R.id.btn_sign);
+       // _sign = (Button) franavdrawer.findViewById(R.id.btn_sign);
         _email = (EditText) rootView.findViewById(R.id.input_email);
         _mobile = (EditText) rootView.findViewById(R.id.input_mobile);
         _password = (EditText) rootView.findViewById(R.id.input_password);
@@ -214,9 +214,9 @@ public class SigninFragment extends Fragment {
 
 
     public void onSigninSuccess() {
-        _signin.setEnabled(true);
-        Log.d("----------", _sign.getText().toString());
-        _sign.setText("Log_out");
+       // _signin.setEnabled(true);
+        Log.d("----------","SigninSuccess");
+        //_sign.setText("Log_out");
 
         //Closing KeyBoard Manually----------------------------------------------
         View v = getActivity().getCurrentFocus();

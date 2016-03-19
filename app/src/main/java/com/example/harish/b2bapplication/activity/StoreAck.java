@@ -1,6 +1,8 @@
 package com.example.harish.b2bapplication.activity;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.View;
 
@@ -11,6 +13,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -23,7 +26,7 @@ import java.io.InputStreamReader;
  */
 public class StoreAck {
     String filename = "acktoken";
-
+    String profileImg = "profileImg.jpg";
     FileOutputStream outputStream;
     FileInputStream inputStream;
     View rootView;
@@ -89,12 +92,45 @@ public class StoreAck {
     {
 
             boolean flag = c.deleteFile(filename);
+                           c.deleteFile(profileImg);
             if (flag == true) {
                 Log.d("true", ">>>>>>>>>>>>>>>>>>>>>>Ack in deleted");
             } else {
                 Log.d("false", ">>>>>>>>>>>>>>>>>>>>>>Ack in deleted");
             }
 
+    }
+
+
+    public void writeProfile(Context c,ByteArrayOutputStream bytes)
+    {
+
+        try {
+            outputStream = c.openFileOutput(profileImg, c.MODE_PRIVATE);
+            outputStream.write(bytes.toByteArray());
+            outputStream.close();
+            Log.d("<<<<<<<<<<<<<<<<<<<<<", "ProfileImg in file");
+
+
+
+        }catch (Exception e){e.printStackTrace();}
+
+    }
+
+    public Bitmap readProfile(Context c) {
+        Bitmap bitmap=null;
+        try {
+            inputStream = c.openFileInput(profileImg);
+            bitmap = BitmapFactory.decodeStream(inputStream);
+            inputStream.close();
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+            return null;
+
+        }
+        return  bitmap;
     }
 
 

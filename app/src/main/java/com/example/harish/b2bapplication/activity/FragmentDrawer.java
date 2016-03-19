@@ -3,6 +3,7 @@ package com.example.harish.b2bapplication.activity;
 
         import android.app.Activity;
         import android.content.Context;
+        import android.graphics.Bitmap;
         import android.os.Bundle;
         import android.support.v4.app.Fragment;
         import android.support.v4.app.FragmentManager;
@@ -19,6 +20,7 @@ package com.example.harish.b2bapplication.activity;
         import android.view.ViewGroup;
         import android.view.inputmethod.InputMethodManager;
         import android.widget.Button;
+        import android.widget.ImageView;
         import android.widget.TextView;
 
         import java.util.ArrayList;
@@ -39,7 +41,8 @@ public class FragmentDrawer extends Fragment {
     private View containerView;
     private static String[] titles = null;
     private FragmentDrawerListener drawerListener;
-    private static  Button sign;
+    private static  ImageView profileImg;
+    private static List navMenuList = null;
 
     public FragmentDrawer() {
 
@@ -49,14 +52,24 @@ public class FragmentDrawer extends Fragment {
         this.drawerListener = listener;
     }
 
-    public static List<NavDrawerItem> getData() {
+    public static List<NavDrawerItem> getData(String msg) {
         List<NavDrawerItem> data = new ArrayList<>();
             // preparing navigation drawer items
             for (int i = 0; i < titles.length; i++) {
                 NavDrawerItem navItem = new NavDrawerItem();
-                navItem.setTitle(titles[i]);
+                if(i==7) {
+                    if(msg.equals("signin"))
+                        navItem.setTitle("SIGNIN");
+                    else
+                        navItem.setTitle("LOGOUT");
+                }
+                else
+                {
+                    navItem.setTitle(titles[i]);
+                }
                 data.add(navItem);
             }
+        navMenuList =data;
         return data;
     }
 
@@ -75,16 +88,15 @@ public class FragmentDrawer extends Fragment {
                              Bundle savedInstanceState) {
         // Inflating view layout
         View layout = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
-        sign = (Button)layout.findViewById(R.id.btn_sign);
-
+        //sign = (Button)layout.findViewById(R.id.btn_sign);
         recyclerView = (RecyclerView) layout.findViewById(R.id.drawerList);
-        adapter = new NavigationDrawerAdapter(getActivity(), getData());
+        adapter = new NavigationDrawerAdapter(getActivity(), getData(" "));
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), recyclerView, new ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                drawerListener.onDrawerItemSelected(view, position);
+                drawerListener.onDrawerItemSelected(view, position,navMenuList);  // passing addtional navMenuList to MainActivity
                 mDrawerLayout.closeDrawer(containerView);
             }
 
@@ -130,22 +142,31 @@ public class FragmentDrawer extends Fragment {
                 toolbar.setAlpha(1 - slideOffset / 2);
                 //Toggling with the login and sign with respect to their drawerlist and profile--------------------
                 String userdata [] = new StoreAck().readFile(getActivity().getApplicationContext());
-                sign = (Button)drawerView.findViewById(R.id.btn_sign);
+                Bitmap profileimg = new StoreAck().readProfile(getActivity().getApplicationContext());
+                profileImg = (ImageView)drawerView.findViewById(R.id.circleView);
                 TextView email = (TextView)drawerView.findViewById(R.id.email);
                 TextView roll = (TextView)drawerView.findViewById(R.id.roll);
                 if(userdata !=null) {
-                    sign.setText("Logout");
+                   // sign.setText("Logout");
                     email.setText(userdata[2]);
                     roll.setText(userdata[3]);
-                    adapter = new NavigationDrawerAdapter(getActivity(),getData()   );
+                    profileImg.setEnabled(true);
+                    if(profileimg!=null)
+                    {
+                        profileImg.setImageBitmap(profileimg);
+                    }
+
+                    adapter = new NavigationDrawerAdapter(getActivity(),getData("logout")   );
                     recyclerView.setAdapter(adapter);
+
+
                 }
                 else {
-                    sign.setText("Signin");
+                    profileImg.setEnabled(true);
                     email.setText("Email");
                     roll.setText("Anonynomous User");
                     List<NavDrawerItem> data = new ArrayList<>();
-                    adapter = new NavigationDrawerAdapter(getActivity(),data);
+                    adapter = new NavigationDrawerAdapter(getActivity(),getData("signin"));
                     recyclerView.setAdapter(adapter);
                     recyclerView.refreshDrawableState();
                 }
@@ -222,6 +243,6 @@ public class FragmentDrawer extends Fragment {
     }
 
     public interface FragmentDrawerListener {
-        public void onDrawerItemSelected(View view, int position);
+        public void onDrawerItemSelected(View view, int position, List navMenuList);
     }
 }

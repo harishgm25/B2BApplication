@@ -20,7 +20,7 @@ import com.example.harish.b2bapplication.R;
 public class RetailerFragment extends Fragment {
 
     private AlertDialog.Builder builder;
-    
+
     public RetailerFragment() {
         // Required empty public constructor
     }
