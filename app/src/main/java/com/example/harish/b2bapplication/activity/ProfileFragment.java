@@ -136,6 +136,7 @@ public class ProfileFragment extends Fragment {
             onProfileUpdateFailed("Validation Failed");
             return;
         }*/
+
         progressdialog = new ProgressDialog(getActivity());
         progressdialog.setIndeterminate(false);
         progressdialog.setMessage("Updating Profile");
@@ -149,31 +150,36 @@ public class ProfileFragment extends Fragment {
                 new Runnable() {
                     public void run() {
                         JSONObject temp1;
+                        JSONObject holder = new JSONObject();
+                        JSONObject userObj = new JSONObject();
+                        String s[] = new StoreAck().readFile(getContext().getApplicationContext());
+                        String ack = s[0];
+                        String userid = s[1];
+
                         try {
-                            JSONObject holder = new JSONObject();
-                            JSONObject userObj = new JSONObject();
-                            String s[] = new StoreAck().readFile(getContext().getApplicationContext());
-                            String ack = s[0];
-                            String userid = s[1];
 
-                      try {
-                                holder.put("lastname", lastname);
-                                holder.put("firstname", firstname);
-                                holder.put("nameoffirm", nameoffirm);
-                                holder.put("estyear", estyear);
-                                holder.put("website", website);
-                                holder.put("pan", pan);
-                                holder.put("tanvat", tanvat);
-                                holder.put("bankacc", bankacc);
-                                holder.put("billingaddress", billingaddress);
-                                holder.put("deliveryaddress", deliveryaddress);
-                                holder.put("id", userid);
-                                userObj.put("profile", holder);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
 
-                            // Http Post for sign_in and receving token and wirting in internal storage
+                            // for updating profile Image
+
+                                    holder.put("profile[profileImg]",getContext().getApplicationContext().getFilesDir() + "/" + "profileImg.jsp");
+                                    holder.put("filename","profileImg.jpg");
+                                    holder.put("id", userid);
+                                   // userObj.put("profile", holder);
+
+                                    holder.put("lastname", lastname);
+                                    holder.put("firstname", firstname);
+                                    holder.put("nameoffirm", nameoffirm);
+                                    holder.put("estyear", estyear);
+                                    holder.put("website", website);
+                                    holder.put("pan", pan);
+                                    holder.put("tanvat", tanvat);
+                                    holder.put("bankacc", bankacc);
+                                    holder.put("billingaddress", billingaddress);
+                                    holder.put("deliveryaddress", deliveryaddress);
+                                    holder.put("id", userid);
+                                    userObj.put("profile", holder);
+
+                           // Http Post for sign_in and receving token and wirting in internal storage
                             String[] ip = getActivity().getResources().getStringArray(R.array.ip_address);
                             HttpPost httpPost = new HttpPost(ip[0] + "api/v1/profiles/updateprofile");
                             httpPost.setEntity(new StringEntity(userObj.toString()));
@@ -195,8 +201,8 @@ public class ProfileFragment extends Fragment {
                                     onProfileUpdateSuccess();
 
                                 } else {
-                                      progressdialog.dismiss();
-                                      onProfileUpdateFailed(temp1.getString("Updation Failed"));
+                                    progressdialog.dismiss();
+                                    onProfileUpdateFailed(temp1.getString("Updation Failed"));
                                 }
 
 

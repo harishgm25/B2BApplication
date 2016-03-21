@@ -4,17 +4,12 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Entity;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
-import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +20,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.harish.b2bapplication.R;
-import com.example.harish.b2bapplication.model.NavDrawerItem;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -34,12 +28,9 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.Serializable;
-import java.util.Map;
 
 
 /**
@@ -226,13 +217,15 @@ public class SigninFragment extends Fragment {
         }
 
         //Setting the Fragment Based on The User---------------------------------
-        android.support.v4.app.Fragment userFragment = null;
+        Fragment userFragment = null;
         String s[] = new StoreAck().readFile(getContext().getApplicationContext());
         if (s[3].equals("Manufacture"))
             userFragment = new ManufactureFragment();
-        if (s[3].equals("WholeSaler"))
+
+        if (s[3].equals("WholeSaller"))
             userFragment = new WholeSalerFragment();
-        if (s[3].equals("\"Retaile"))
+
+        if (s[3].equals("Retaile"))
             userFragment = new RetailerFragment();
 
         FragmentManager fragmentManager = getFragmentManager();

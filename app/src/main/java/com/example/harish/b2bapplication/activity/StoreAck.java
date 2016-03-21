@@ -102,7 +102,7 @@ public class StoreAck {
     }
 
 
-    public void writeProfile(Context c,ByteArrayOutputStream bytes)
+    public boolean writeProfile(Context c,ByteArrayOutputStream bytes)
     {
 
         try {
@@ -110,10 +110,12 @@ public class StoreAck {
             outputStream.write(bytes.toByteArray());
             outputStream.close();
             Log.d("<<<<<<<<<<<<<<<<<<<<<", "ProfileImg in file");
+            return true;
 
 
-
-        }catch (Exception e){e.printStackTrace();}
+        }catch (Exception e){e.printStackTrace();
+            return false;
+        }
 
     }
 

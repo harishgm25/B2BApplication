@@ -1,4 +1,6 @@
 package com.example.harish.b2bapplication.activity;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -8,6 +10,8 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.StrictMode;
+import android.preference.PreferenceActivity;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -17,27 +21,49 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import com.example.harish.b2bapplication.R;
-import com.example.harish.b2bapplication.adapter.NavigationDrawerAdapter;
 import com.example.harish.b2bapplication.model.NavDrawerItem;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.SyncHttpClient;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.widget.ImageView;
+import android.widget.Toast;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.ByteArrayBody;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.DefaultedHttpContext;
+import org.apache.http.protocol.HttpContext;
+import org.apache.http.util.EntityUtils;
+import org.apache.http.entity.ContentType;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+
+import cz.msebera.android.httpclient.Header;
+
 
 public class MainActivity extends AppCompatActivity implements FragmentDrawer.FragmentDrawerListener {
 
@@ -46,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     private Button _sign = null;
     private String  signstatus;
     private ImageView _profileView = null;
+    private ProgressDialog progressdialog;
     private static final int CAMERA_REQUEST = 1888;
     private static final int SELECT_FILE = 2000;
 
@@ -60,11 +87,15 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
             mToolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(mToolbar);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+
 
         //-------------------- OTP SSH KEY for MSG 91------------------------------
         MessageDigest md = null;
@@ -149,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
         NavDrawerItem navDrawerItem = (NavDrawerItem) menu.get(7); // manually overriding and getting NavDrawerItem List
         String title = navDrawerItem.getTitle();
-        displayView(position,title);                   // Getting the toggle title for SignIn or LogOut
+        displayView(position, title);                   // Getting the toggle title for SignIn or LogOut
 
     }
     private void displayView(int position, String toggletitle) {
@@ -294,8 +325,10 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             if (requestCode == CAMERA_REQUEST) {
                 Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                thumbnail.compress(Bitmap.CompressFormat.JPEG,90, bytes);
-                new StoreAck().writeProfile(getApplicationContext(), bytes);
+                thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+
+                if(new StoreAck().writeProfile(getApplicationContext(), bytes)) // writing Image to a file
+                    updateProfileImg(); // http post request to update profile image
                 _profileView.setImageBitmap(thumbnail);
 
             } else if (requestCode == SELECT_FILE) {
@@ -325,6 +358,99 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
 
         }
+    }
+
+    public  void updateProfileImg()
+    {
+        Log.d("TAG", "Update Pofile");
+     /*   if (!validate()) {
+            onProfileUpdateFailed("Validation Failed");
+            return;
+        }*/
+
+        progressdialog = new ProgressDialog(MainActivity.this);
+        progressdialog.setIndeterminate(false);
+        progressdialog.setMessage("Updating Profile Image");
+        progressdialog.show();
+
+
+        // for updating profile Image
+        File file = new File(getApplicationContext().getFilesDir() + "/" + "profileImg.jpg");
+        FileBody fb = new FileBody(file,"image/jpg");
+        String[] ip = getApplicationContext().getResources().getStringArray(R.array.ip_address);
+        String s[] = new StoreAck().readFile(getApplicationContext().getApplicationContext());
+        String ack = s[0];
+        String userid = s[1];
+
+        RequestParams params = new RequestParams();
+        try {
+           /* Bitmap bitmap = BitmapFactory.decodeFile(file.toString());
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            byte [] byte_arr = stream.toByteArray();
+            String image_str = Base64.encodeToString(byte_arr, Base64.DEFAULT);*/
+
+            Log.i("postImage", "Image: " + file);
+            params.put("profile[profileImg]", file  );
+            params.put("profile[id]", userid);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        SyncHttpClient client = new SyncHttpClient();
+
+        client.addHeader("Authorization", "Token token=\"" + ack + "\"");
+        client.post(ip[0] + "api/v1/profiles/updateprofile", params,new AsyncHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                Log.w("async", "success!!!!");
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                Log.e("async", "failure!");
+            }
+
+
+        });
+
+
+        // TODO: Implement your own signup logic here.
+
+                            /*holder.put("profileImg",entity);
+                            holder.put("id", userid);
+                            userObj.put("profile", holder);*/
+
+
+                           /*
+                            HttpPost httpPost = new HttpPost(ip[0] + "api/v1/profiles/updateprofile");
+                            httpPost.setEntity(entity);
+                            httpPost.setEntity(new StringEntity(userObj.toString()));
+                            httpPost.addHeader("Authorization", "Token token=\"" + ack + "\"");
+                            httpPost.setHeader("Accept", "application/json");
+                            httpPost.setHeader("Content-type", "application/json");
+                            HttpResponse response = new DefaultHttpClient().execute(httpPost,new BasicHttpContext());
+                            Log.d("Http Post Response:", response.toString());
+                            String json = EntityUtils.toString(response.getEntity());
+                            temp1 = new JSONObject(json);
+                            Log.d("Response status >>>>>>>", temp1.toString()); */
+
+
+    }
+
+    public void onProfileImgUpdateSuccess()
+    {
+        Toast.makeText(MainActivity.this, "Profile Updated", Toast.LENGTH_LONG).show();
+        getFragmentManager().popBackStackImmediate();
+
+    }
+    public  void onProfileImgUpdateFailed(String msg)
+    {
+        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_LONG).show();
+        getFragmentManager().popBackStackImmediate();
+
     }
 }
 

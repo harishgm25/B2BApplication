@@ -41,13 +41,15 @@ public class WholeSalerFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_wholesaler, container, false);
 
         //Getting Bundle Serialized Object
-        boolean isnewsignup =  getArguments().getBoolean("newsignup");
-        //checking for new signup for profile filling
-        if(isnewsignup)
-        {
-            isnewsignup = false;
-            showDialog();
-            getArguments().remove("newsignup");
+
+        if(getArguments() != null) {
+            boolean isnewsignup = getArguments().getBoolean("newsignup");
+            //checking for new signup for profile filling
+            if (isnewsignup) {
+                isnewsignup = false;
+                showDialog();
+                getArguments().remove("newsignup");
+            }
         }
 
 
