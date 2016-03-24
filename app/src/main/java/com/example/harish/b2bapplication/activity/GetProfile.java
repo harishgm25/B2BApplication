@@ -30,8 +30,8 @@ public class GetProfile {
     private Context context;
     private String ack;
     private JSONObject profile;
-    private View rootView;
     ProfileFragment profileFragment;
+
 
     public JSONObject getProfile(String a, final String userid, final Context c , ProfileFragment p)
     {
@@ -42,6 +42,15 @@ public class GetProfile {
         progressDialog.setIndeterminate(false);
         progressDialog.setMessage("Getting Profile");
         progressDialog.show();
+        profile =getProfileData(userid);
+        return  profile;
+
+    }
+
+
+
+    public JSONObject getProfileData(final String userid)
+    {
 
 
         new android.os.Handler().postDelayed(
@@ -54,7 +63,7 @@ public class GetProfile {
                             JSONObject userObj = new JSONObject();
                             try {
 
-                                holder.put("id", userid);
+                                holder.put("id",userid);
                                 userObj.put("profile", holder);
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -68,15 +77,11 @@ public class GetProfile {
                             httpPost.setHeader("Content-type", "application/json");
                             HttpResponse response = new DefaultHttpClient().execute(httpPost);
                             Log.d("Http Post Response:", response.toString());
-
                             String json = EntityUtils.toString(response.getEntity());
                             profile = new JSONObject(json);
-
                             Log.d("Response status >>>>>>>", profile.toString());
-
                             if (profile.has("success")) {
                                 if (profile.getString("success").equals("true")) {
-
                                     onSuccess();
                                     progressDialog.dismiss();
                                 }
@@ -84,9 +89,6 @@ public class GetProfile {
                                 progressDialog.dismiss();
                                 onFailed("Failed Getting Updates");
                             }
-
-                            onSuccess();
-                            // onSignupFailed();
                             progressDialog.dismiss();
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -97,6 +99,7 @@ public class GetProfile {
                 },3000);
 
         return profile;
+
     }
 
     public void onSuccess()

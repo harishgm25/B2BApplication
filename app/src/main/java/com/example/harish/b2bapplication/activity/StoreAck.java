@@ -1,6 +1,7 @@
 package com.example.harish.b2bapplication.activity;
 
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
@@ -91,6 +92,7 @@ public class StoreAck {
     public void DeleteFile(Context c)
     {
 
+
             boolean flag = c.deleteFile(filename);
                            c.deleteFile(profileImg);
             if (flag == true) {
@@ -101,7 +103,7 @@ public class StoreAck {
 
     }
 
-
+    // thumb image
     public boolean writeProfile(Context c,ByteArrayOutputStream bytes)
     {
 
@@ -110,6 +112,7 @@ public class StoreAck {
             outputStream.write(bytes.toByteArray());
             outputStream.close();
             Log.d("<<<<<<<<<<<<<<<<<<<<<", "ProfileImg in file");
+
             return true;
 
 
@@ -133,6 +136,21 @@ public class StoreAck {
 
         }
         return  bitmap;
+    }
+
+   // writing the original file and need to push to the server
+    public File writeProfileOrignalImage(Context c)
+    {
+
+        try {
+            ContextWrapper cw = new ContextWrapper(c);
+            File directory = cw.getDir("media", c.MODE_PRIVATE);
+            return directory;
+
+        }catch (Exception e){e.printStackTrace();
+            return null;
+        }
+
     }
 
 

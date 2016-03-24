@@ -19,7 +19,6 @@ package com.example.harish.b2bapplication.activity;
         import android.view.View;
         import android.view.ViewGroup;
         import android.view.inputmethod.InputMethodManager;
-        import android.widget.Button;
         import android.widget.ImageView;
         import android.widget.TextView;
 
@@ -43,9 +42,14 @@ public class FragmentDrawer extends Fragment {
     private FragmentDrawerListener drawerListener;
     private static  ImageView profileImg;
     private static List navMenuList = null;
+    private boolean isnewsignin = false;
+    private String userdata [];
+    private Bitmap profileimgbit;
+    private TextView email;
+    private TextView roll;
 
     public FragmentDrawer() {
-
+            userdata = new String[5];
     }
 
     public void setDrawerListener(FragmentDrawerListener listener) {
@@ -90,7 +94,32 @@ public class FragmentDrawer extends Fragment {
         View layout = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
         //sign = (Button)layout.findViewById(R.id.btn_sign);
         recyclerView = (RecyclerView) layout.findViewById(R.id.drawerList);
-        adapter = new NavigationDrawerAdapter(getActivity(), getData(" "));
+
+        String userdata [] = new StoreAck().readFile(getActivity().getApplicationContext());
+        profileimgbit = new StoreAck().readProfile(getActivity().getApplicationContext());
+        profileImg = (ImageView)layout.findViewById(R.id.circleView);
+        TextView email = (TextView)layout.findViewById(R.id.email);
+        TextView roll = (TextView)layout.findViewById(R.id.roll);
+        if(userdata !=null) {
+
+            email.setText(userdata[2]);
+            roll.setText(userdata[3]);
+            profileImg.setEnabled(true);
+            if (profileimgbit != null) {
+                profileImg.setImageBitmap(profileimgbit);
+            }
+            isnewsignin = false;
+            adapter = new NavigationDrawerAdapter(getActivity(), getData("logout"));
+        }
+        else {
+            isnewsignin = true;
+            profileImg.setEnabled(false);
+            email.setText("Email");
+            roll.setText("Anonynomous User");
+            List<NavDrawerItem> data = new ArrayList<>();
+            adapter = new NavigationDrawerAdapter(getActivity(),getData("signin"));
+        }
+
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), recyclerView, new ClickListener() {
@@ -110,14 +139,51 @@ public class FragmentDrawer extends Fragment {
     }
 
 
-    public void setUp(int fragmentId, DrawerLayout drawerLayout, final Toolbar toolbar) {
+        public void setUp(int fragmentId, DrawerLayout drawerLayout, final Toolbar toolbar) {
         containerView = getActivity().findViewById(fragmentId);
         mDrawerLayout = drawerLayout;
         mDrawerToggle = new ActionBarDrawerToggle(getActivity(), drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close) {
+
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
                 getActivity().invalidateOptionsMenu();
+                //Toggling with the login and sign with respect to their drawerlist and profile--------------------
+
+                    userdata = new StoreAck().readFile(getActivity().getApplicationContext());
+                    profileimgbit = new StoreAck().readProfile(getActivity().getApplicationContext());
+                    email = (TextView) drawerView.findViewById(R.id.email);
+                    roll = (TextView) drawerView.findViewById(R.id.roll);
+
+
+                if (userdata != null) {
+                    if(isnewsignin) {
+                        email.setText(userdata[2]);
+                        roll.setText(userdata[3]);
+                        profileImg.setEnabled(true);
+                        if (profileimgbit != null) {
+                            profileImg.setImageBitmap(profileimgbit);
+                            adapter = new NavigationDrawerAdapter(getActivity(), getData("logout"));
+                            recyclerView.setAdapter(adapter);
+                            isnewsignin = false;
+                            recyclerView.refreshDrawableState();
+                        }
+                    }
+
+                }
+
+                else {
+                    isnewsignin =true;
+                    profileImg.setEnabled(false);
+                    email.setText("Email");
+                    roll.setText("Anonynomous User");
+                    List<NavDrawerItem> data = new ArrayList<>();
+                    adapter = new NavigationDrawerAdapter(getActivity(),getData("signin"));
+                    recyclerView.setAdapter(adapter);
+                    recyclerView.refreshDrawableState();
+
+                }
+
 
 
                 //---------------Manually Closing the SoftInputFormWindow------------------
@@ -140,36 +206,6 @@ public class FragmentDrawer extends Fragment {
             public void onDrawerSlide(View drawerView, float slideOffset) {
 
                 toolbar.setAlpha(1 - slideOffset / 2);
-                //Toggling with the login and sign with respect to their drawerlist and profile--------------------
-                String userdata [] = new StoreAck().readFile(getActivity().getApplicationContext());
-                Bitmap profileimg = new StoreAck().readProfile(getActivity().getApplicationContext());
-                profileImg = (ImageView)drawerView.findViewById(R.id.circleView);
-                TextView email = (TextView)drawerView.findViewById(R.id.email);
-                TextView roll = (TextView)drawerView.findViewById(R.id.roll);
-                if(userdata !=null) {
-                   // sign.setText("Logout");
-                    email.setText(userdata[2]);
-                    roll.setText(userdata[3]);
-                    profileImg.setEnabled(true);
-                    if(profileimg!=null)
-                    {
-                        profileImg.setImageBitmap(profileimg);
-                    }
-
-                    adapter = new NavigationDrawerAdapter(getActivity(),getData("logout")   );
-                    recyclerView.setAdapter(adapter);
-
-
-                }
-                else {
-                    profileImg.setEnabled(true);
-                    email.setText("Email");
-                    roll.setText("Anonynomous User");
-                    List<NavDrawerItem> data = new ArrayList<>();
-                    adapter = new NavigationDrawerAdapter(getActivity(),getData("signin"));
-                    recyclerView.setAdapter(adapter);
-                    recyclerView.refreshDrawableState();
-                }
                 super.onDrawerSlide(drawerView, slideOffset);
             }
         };

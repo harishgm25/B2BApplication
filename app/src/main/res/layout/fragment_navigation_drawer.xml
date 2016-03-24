@@ -1,6 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/white">
 
 
@@ -45,27 +46,23 @@
             />
         </LinearLayout>
 
-      <!--  <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:src="@drawable/ic_action_profile"
-            android:scaleType="fitCenter"
-            android:id="@+id/circleView"
-            android:layout_above="@+id/linearLayout"
-            android:contextClickable="true"
-            android:layout_centerHorizontal="true" /> -->
-        <ImageView
+
+        <com.pkmmte.view.CircularImageView
             android:id="@+id/circleView"
             android:layout_width="120dp"
             android:layout_height="120dp"
+            android:layout_marginLeft="16dp"
             android:src="@drawable/ic_action_profile"
             android:scaleType="fitCenter"
             android:layout_above="@+id/linearLayout"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true"
+            app:border="true"
+            app:border_color="#EEEEEE"
+            app:border_width="1dp"
+            app:shadow="true" />
 
-
-
-    </RelativeLayout>
+            />
+ </RelativeLayout>
 
 
     <android.support.v7.widget.RecyclerView
@@ -80,14 +77,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true" >
 
-    <!--
-         Signup Button
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/btn_sign"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:padding="12dp"/>
-            android:text="signup" -->
 
     </RelativeLayout>
 

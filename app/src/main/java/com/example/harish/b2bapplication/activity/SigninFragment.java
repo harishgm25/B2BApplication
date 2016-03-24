@@ -4,6 +4,10 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtils;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
@@ -16,10 +20,14 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.harish.b2bapplication.R;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.SyncHttpClient;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -29,33 +37,43 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.lang.ref.WeakReference;
+import java.net.URL;
+
+import cz.msebera.android.httpclient.Header;
 
 
 /**
  * Created by harish on 4/3/16.
  */
-public class SigninFragment extends Fragment {
 
+
+public class SigninFragment extends Fragment   {
 
     private EditText _email = null;
     private EditText _password = null;
-    private EditText _mobile = null;
     private Button _signin = null;
-    private Button _sign = null;
     private TextView _signup = null;
-    private View franavdrawer = null;
     private String email;
-    private String moblie;
+    private ImageView _profileImg;
     private String password;
     private ProgressDialog progressdialog;
+    private String imgUrl;
+    private JSONObject temp1;
+    private String[] ip;
+    private  Bitmap bmp;
 
     private FileOutputStream fos;
+    private ProgressDialog progressDialog;
 
     public SigninFragment() {
         // Required empty public constructor
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -70,10 +88,8 @@ public class SigninFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_signin, container, false);
-        franavdrawer = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
-       // _sign = (Button) franavdrawer.findViewById(R.id.btn_sign);
         _email = (EditText) rootView.findViewById(R.id.input_email);
-        _mobile = (EditText) rootView.findViewById(R.id.input_mobile);
+        _profileImg = (ImageView) rootView.findViewById(R.id.circleView);
         _password = (EditText) rootView.findViewById(R.id.input_password);
         _signin = (Button) rootView.findViewById(R.id.btn_signin);
         _signup = (TextView) rootView.findViewById(R.id.link_signup);
@@ -146,7 +162,7 @@ public class SigninFragment extends Fragment {
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
-                        JSONObject temp1;
+
                         try {
                             JSONObject holder = new JSONObject();
                             JSONObject userObj = new JSONObject();
@@ -160,7 +176,7 @@ public class SigninFragment extends Fragment {
                             }
 
                             // Http Post for sign_in and receving token and wirting in internal storage
-                            String[] ip = getActivity().getResources().getStringArray(R.array.ip_address);
+                            ip = getActivity().getResources().getStringArray(R.array.ip_address);
                             HttpPost httpPost = new HttpPost(ip[0] + "users/sign_in");
                             httpPost.setEntity(new StringEntity(userObj.toString()));
                             httpPost.setHeader("Accept", "application/json");
@@ -175,10 +191,14 @@ public class SigninFragment extends Fragment {
                             if (temp1.has("success")) {
                                 if (temp1.getString("success").equals("true")) {
                                     Context c = getActivity().getApplicationContext();
+                                    // Getting email and roll of the user and written in the file
                                     new StoreAck().writeFile(c, temp1);
                                     onSigninSuccess();
                                     progressdialog.dismiss();
-
+                                }
+                                else
+                                {
+                                    onSigninFailed(temp1.getString("error"));
                                 }
                             } else {
 
@@ -189,25 +209,28 @@ public class SigninFragment extends Fragment {
                         } catch (IOException e) {
                             e.printStackTrace();
 
-                            onSigninFailed("error");
+                            onSigninFailed("Check Connectivity Try Later");
                         } catch (JSONException e) {
                             e.printStackTrace();
 
-                            onSigninFailed("error");
+                            onSigninFailed("Check Connectivity Try Later");
                         } catch (Exception e) {
                             e.printStackTrace();
 
-                            onSigninFailed("error");
+                            onSigninFailed("Check Connectivity Try Later");
                         }
                     }
                 }, 3000);
+
+
     }
 
 
     public void onSigninSuccess() {
        // _signin.setEnabled(true);
-        Log.d("----------","SigninSuccess");
-        //_sign.setText("Log_out");
+        Log.d("----------", "SigninSuccess");
+        callAsyncProfileImageTask();
+
 
         //Closing KeyBoard Manually----------------------------------------------
         View v = getActivity().getCurrentFocus();
@@ -221,8 +244,7 @@ public class SigninFragment extends Fragment {
         String s[] = new StoreAck().readFile(getContext().getApplicationContext());
         if (s[3].equals("Manufacture"))
             userFragment = new ManufactureFragment();
-
-        if (s[3].equals("WholeSaller"))
+        if (s[3].equals("WholeSeller"))
             userFragment = new WholeSalerFragment();
 
         if (s[3].equals("Retaile"))
@@ -232,8 +254,6 @@ public class SigninFragment extends Fragment {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.container_body, userFragment);
         fragmentTransaction.commit();
-
-
         return;
     }
 
@@ -242,6 +262,8 @@ public class SigninFragment extends Fragment {
         Toast.makeText(getContext(), msg, Toast.LENGTH_LONG).show();
         _signin.setEnabled(true);
     }
+
+
 
     // Validating signin fields
     public boolean validate() {
@@ -280,6 +302,107 @@ public class SigninFragment extends Fragment {
             }
         }, time);
     }
+
+
+
+    public void callAsyncProfileImageTask()
+    {
+       // Loading Image form Server using Nested AsyncTask--------------------------------------------------------
+
+        new GetProfileImage(getContext()).execute();
+    }
+
+
+
+    private class GetProfileImage extends AsyncTask<Void,Void,Void>
+    {
+
+        private  Context context;
+        String imgUrl;
+        String ip [];
+
+
+        GetProfileImage(Context c)
+        {
+            context=c;
+           ip = getActivity().getResources().getStringArray(R.array.ip_address);
+
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if (bmp != null) {
+                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                //converting orginal image to thumb
+                Bitmap ThumbImage = ThumbnailUtils.extractThumbnail(bmp,100,100);
+                ThumbImage.compress(Bitmap.CompressFormat.JPEG,100, bytes);
+                new StoreAck().writeProfile(context, bytes);
+
+            }
+
+
+
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+
+                // Getting the profile Image of the user
+                String ack = temp1.getString("token");
+                String userid = temp1.getString("userid");
+                RequestParams param = new RequestParams();
+                try {
+                    param.put("profile[id]", userid);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                SyncHttpClient client = new SyncHttpClient();
+
+                client.addHeader("Authorization", "Token token=\"" + ack + "\"");
+                client.post(ip[0] + "api/v1/profiles/getprofile", param, new JsonHttpResponseHandler() {
+
+
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                        super.onSuccess(statusCode, headers, response);
+
+                        if (response.has("profileImg")) {
+                            try {
+                                imgUrl = response.getString("profileImg");
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                        super.onFailure(statusCode, headers, responseString, throwable);
+                    }
+
+
+                });
+
+
+                InputStream in = new URL(ip[0]+imgUrl).openStream();
+                bmp = BitmapFactory.decodeStream(in);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+    }
+
+
+
+
 }
 
 

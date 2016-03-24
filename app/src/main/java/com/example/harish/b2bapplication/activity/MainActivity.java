@@ -1,6 +1,5 @@
 package com.example.harish.b2bapplication.activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -9,19 +8,15 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.StrictMode;
-import android.preference.PreferenceActivity;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.CursorLoader;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -36,29 +31,12 @@ import com.loopj.android.http.SyncHttpClient;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.security.MessageDigest;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.widget.ImageView;
 import android.widget.Toast;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.entity.mime.content.StringBody;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.DefaultedHttpContext;
-import org.apache.http.protocol.HttpContext;
-import org.apache.http.util.EntityUtils;
-import org.apache.http.entity.ContentType;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
@@ -70,11 +48,13 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     private Toolbar mToolbar;
     private FragmentDrawer drawerFragment;
     private Button _sign = null;
-    private String  signstatus;
     private ImageView _profileView = null;
     private ProgressDialog progressdialog;
     private static final int CAMERA_REQUEST = 1888;
     private static final int SELECT_FILE = 2000;
+    private Uri mImageUri;  // for temp image
+    private File tempDir; // for temp dir for image
+    private  DrawerLayout drawerLayout;
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
@@ -130,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                 public void onClick(View v) {
 
                     ConnectionDetector connectionDetector = new ConnectionDetector(getApplicationContext());
-                    DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+                    drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
                     if (connectionDetector.isConnectingToInternet())
                     {
 
@@ -247,6 +227,8 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                 fragmentTransaction.commit();
                 drawerLayout.closeDrawer(Gravity.LEFT); // closing DrawerLayOut Manually
             } else {
+
+
                 SigninFragment s = new SigninFragment();
                 Bundle bundles = new Bundle();
                 FragmentManager fragmentManager = getSupportFragmentManager();
@@ -293,6 +275,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
    public void getImageProfile()
    {
+
        final CharSequence[] items = { "Take Photo", "Choose from Library", "Cancel" };
        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
        builder.setTitle("Add Photo!");
@@ -301,78 +284,78 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
            public void onClick(DialogInterface dialog, int item) {
                if (items[item].equals("Take Photo")) {
                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                   File photo = null;
+                   try
+                   {
 
+                   }
+                   catch(Exception e)
+                   {
+                       Toast.makeText(getApplicationContext(), "Can't create File", Toast.LENGTH_LONG).show();
+
+                   }
+                   intent.putExtra(MediaStore.EXTRA_OUTPUT,mImageUri);
                    startActivityForResult(intent, CAMERA_REQUEST);
+
                } else if (items[item].equals("Choose from Library")) {
-                   Intent intent = new Intent(
-                           Intent.ACTION_PICK,
-                           android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                   intent.setType("image/*");
-                   startActivityForResult(
-                           Intent.createChooser(intent, "Select File"),SELECT_FILE);
+                            Intent intent = new Intent(
+                            Intent.ACTION_PICK,
+                            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                            intent.setType("image/*");
+                            startActivityForResult(intent,SELECT_FILE);
                } else if (items[item].equals("Cancel")) {
                    dialog.dismiss();
                }
            }
-       });
+
+        });
        builder.show();
    }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
+        Bitmap bitmap;
+
+        Toast.makeText(MainActivity.this, "Profile Image Updated", Toast.LENGTH_LONG).show();
+       if (resultCode == RESULT_OK) {   // For Camera
             if (requestCode == CAMERA_REQUEST) {
-                Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+
+                Bitmap thumb = (Bitmap)data.getExtras().get("data"); // gettting Thumb Image
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
-
-                if(new StoreAck().writeProfile(getApplicationContext(), bytes)) // writing Image to a file
+                thumb.compress(Bitmap.CompressFormat.JPEG,100, bytes);
+                _profileView.setImageBitmap(thumb);
+                if(new StoreAck().writeProfile(getApplicationContext(), bytes)) // writing  Image to a file
                     updateProfileImg(); // http post request to update profile image
-                _profileView.setImageBitmap(thumbnail);
-
-            } else if (requestCode == SELECT_FILE) {
-                Uri selectedImageUri = data.getData();
-                String[] projection = {MediaStore.MediaColumns.DATA};
-                CursorLoader cursorLoader = new CursorLoader(this, selectedImageUri, projection, null, null,
-                        null);
-                Cursor cursor = cursorLoader.loadInBackground();
-                int column_index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
-                cursor.moveToFirst();
-                String selectedImagePath = cursor.getString(column_index);
-
-                Bitmap bm;
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inJustDecodeBounds = true;
-                BitmapFactory.decodeFile(selectedImagePath, options);
-                final int REQUIRED_SIZE = 200;
-                int scale = 1;
-                while (options.outWidth / scale / 2 >= REQUIRED_SIZE
-                        && options.outHeight / scale / 2 >= REQUIRED_SIZE)
-                    scale *= 2;
-                options.inSampleSize = scale;
-                options.inJustDecodeBounds = false;
-                bm = BitmapFactory.decodeFile(selectedImagePath, options);
-                _profileView.setImageBitmap(bm);
             }
-
-
-        }
+           if (requestCode == SELECT_FILE) {
+               Uri selectedImage = data.getData();
+               String[] filePathColumn = { MediaStore.Images.Media.DATA };
+               // Get the cursor
+               Cursor cursor = getContentResolver().query(selectedImage,
+               filePathColumn, null, null, null);
+               // Move to first row
+               cursor.moveToFirst();
+               int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+               String imgDecodableString = cursor.getString(columnIndex);
+               cursor.close();
+               bitmap = BitmapFactory.decodeFile(imgDecodableString);
+               ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+               bitmap.compress(Bitmap.CompressFormat.JPEG,60, bytes);
+               _profileView.setImageBitmap(bitmap);
+               if(new StoreAck().writeProfile(getApplicationContext(), bytes)) // writing  Image to a file
+                        updateProfileImg(); // http post request to update profile image
+                }
+            }
+            super.onActivityResult(requestCode, resultCode, data);
     }
+
 
     public  void updateProfileImg()
     {
         Log.d("TAG", "Update Pofile");
-     /*   if (!validate()) {
-            onProfileUpdateFailed("Validation Failed");
-            return;
-        }*/
 
-        progressdialog = new ProgressDialog(MainActivity.this);
-        progressdialog.setIndeterminate(false);
-        progressdialog.setMessage("Updating Profile Image");
-        progressdialog.show();
-
+     ;
 
         // for updating profile Image
         File file = new File(getApplicationContext().getFilesDir() + "/" + "profileImg.jpg");
@@ -384,14 +367,8 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
         RequestParams params = new RequestParams();
         try {
-           /* Bitmap bitmap = BitmapFactory.decodeFile(file.toString());
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-            byte [] byte_arr = stream.toByteArray();
-            String image_str = Base64.encodeToString(byte_arr, Base64.DEFAULT);*/
-
             Log.i("postImage", "Image: " + file);
-            params.put("profile[profileImg]", file  );
+            params.put("profile[profileImg]", file );
             params.put("profile[id]", userid);
 
 
@@ -406,38 +383,20 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 Log.w("async", "success!!!!");
+                Toast.makeText(MainActivity.this, "Profile Image Updated", Toast.LENGTH_LONG).show();
+
+                drawerLayout.closeDrawer(Gravity.LEFT); // closing DrawerLayOut Manually
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
                 Log.e("async", "failure!");
+                Toast.makeText(MainActivity.this, "Profile Image Updated Failed", Toast.LENGTH_LONG).show();
+                drawerLayout.closeDrawer(Gravity.LEFT); // closing DrawerLayOut Manually
             }
 
 
         });
-
-
-        // TODO: Implement your own signup logic here.
-
-                            /*holder.put("profileImg",entity);
-                            holder.put("id", userid);
-                            userObj.put("profile", holder);*/
-
-
-                           /*
-                            HttpPost httpPost = new HttpPost(ip[0] + "api/v1/profiles/updateprofile");
-                            httpPost.setEntity(entity);
-                            httpPost.setEntity(new StringEntity(userObj.toString()));
-                            httpPost.addHeader("Authorization", "Token token=\"" + ack + "\"");
-                            httpPost.setHeader("Accept", "application/json");
-                            httpPost.setHeader("Content-type", "application/json");
-                            HttpResponse response = new DefaultHttpClient().execute(httpPost,new BasicHttpContext());
-                            Log.d("Http Post Response:", response.toString());
-                            String json = EntityUtils.toString(response.getEntity());
-                            temp1 = new JSONObject(json);
-                            Log.d("Response status >>>>>>>", temp1.toString()); */
-
-
     }
 
     public void onProfileImgUpdateSuccess()
@@ -453,4 +412,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
     }
 }
+
+
+
 
