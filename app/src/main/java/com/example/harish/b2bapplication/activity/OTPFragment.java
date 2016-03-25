@@ -70,16 +70,16 @@ public class OTPFragment extends Fragment implements VerificationListener {
                 if (connectionDetector.isConnectingToInternet()) {
                     Config config = SendOtpVerification.config().context(getContext().getApplicationContext())
                             .build();
-                //  mVerification = SendOtpVerification.createSmsVerification(config, _mobile.getText().toString(), otpFragment, "91", "");
-                 // mVerification.initiate();
-                    onVerified("hello");
-               /*     _verifyotp.setEnabled(false);
+                  mVerification = SendOtpVerification.createSmsVerification(config, _mobile.getText().toString(), otpFragment, "91", "");
+                   mVerification.initiate();
+                    //onVerified("hello");
+                  _verifyotp.setEnabled(false);
                     progressDialog = new ProgressDialog(getActivity());
                     progressDialog.setCancelable(false);
                     progressDialog.setIndeterminate(false);
                     progressDialog.setMessage("Sending OTP");
                     progressDialog.show();
-                    timerDelayRemoveDialog(5000, progressDialog);*/
+                    timerDelayRemoveDialog(50000, progressDialog);
 
 
                 }
@@ -108,7 +108,7 @@ public class OTPFragment extends Fragment implements VerificationListener {
     public  void  showDialog()
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-       builder.setCancelable(false);
+        builder.setCancelable(false);
         builder.setTitle("Enter OTP");
         final EditText input = new EditText(getContext());
         // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
@@ -123,7 +123,7 @@ public class OTPFragment extends Fragment implements VerificationListener {
                 verifyOTP();
                 progressDialog.setMessage("Verifying OTP");
                 progressDialog.show();
-                timerDelayRemoveDialog(5000,progressDialog);
+                timerDelayRemoveDialog(50000,progressDialog);
 
             }
         });
@@ -169,7 +169,7 @@ public class OTPFragment extends Fragment implements VerificationListener {
 
     @Override
     public void onVerified(String response) {
-//        progressDialog.dismiss();
+        progressDialog.dismiss();
         Toast.makeText(getContext(), "OTP Verifyed", Toast.LENGTH_LONG).show();
         SignupFragment signupFragment = new SignupFragment();
         Bundle arg = new Bundle();
@@ -209,10 +209,10 @@ public class OTPFragment extends Fragment implements VerificationListener {
             public void run() {
                 if(d.isShowing()) {
                     d.dismiss();
-                    Toast.makeText(getContext(), "Check Connectivity", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "Seems taking to long", Toast.LENGTH_LONG).show();
                 }
             }
-        }, 10000);
+        }, time);
     }
 }
 

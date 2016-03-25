@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     private Uri mImageUri;  // for temp image
     private File tempDir; // for temp dir for image
     private  DrawerLayout drawerLayout;
+    private String s[];
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
@@ -74,8 +75,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             mToolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(mToolbar);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-
+        s = new String[5];
 
         //-------------------- OTP SSH KEY for MSG 91------------------------------
         MessageDigest md = null;
@@ -168,8 +168,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         String title = getString(R.string.app_name);
         switch (position) {
             case 0:
-                fragment = new HomeFragment();
-                title = getString(R.string.nav_item_home);
+                getUserHome();
                 break;
             case 1:
                     if(toggletitle.equals("SIGNIN"))
@@ -183,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                      }
                 break;
             case 2:
-                fragment = new HomeFragment();
+                fragment = new SettingFragment();
                 title = getString(R.string.nav_item_accountsetting);
                 break;
             case 3://sandeep block
@@ -203,6 +202,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         if (fragment != null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.addToBackStack(null);
             fragmentTransaction.replace(R.id.container_body, fragment);
             fragmentTransaction.commit();
 
@@ -238,6 +238,41 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                 drawerLayout.closeDrawer(Gravity.LEFT); // closing DrawerLayOut Manually
 
             }
+        }
+        else
+        {
+            connectionDetector.showConnectivityStatus();
+            drawerLayout.closeDrawer(Gravity.LEFT); // closing DrawerLayOut Manually
+        }
+
+    }
+
+    public void getUserHome()
+    {
+        s = new StoreAck().readFile(getApplicationContext().getApplicationContext());
+        ConnectionDetector connectionDetector = new ConnectionDetector(getApplicationContext());
+        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        Fragment userFragment = null;
+        if (connectionDetector.isConnectingToInternet())
+        {
+
+            if (s == null)
+                userFragment = new HomeFragment();
+            else {
+                if (s[3].equals("Manufacture"))
+                    userFragment = new ManufactureFragment();
+                if (s[3].equals("WholeSeller"))
+                    userFragment = new WholeSalerFragment();
+                if (s[3].equals("Retailer"))
+                    userFragment = new RetailerFragment();
+            }
+
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.replace(R.id.container_body, userFragment);
+            fragmentTransaction.commit();
+            return;
         }
         else
         {
@@ -361,7 +396,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         File file = new File(getApplicationContext().getFilesDir() + "/" + "profileImg.jpg");
         FileBody fb = new FileBody(file,"image/jpg");
         String[] ip = getApplicationContext().getResources().getStringArray(R.array.ip_address);
-        String s[] = new StoreAck().readFile(getApplicationContext().getApplicationContext());
+        s = new StoreAck().readFile(getApplicationContext().getApplicationContext());
         String ack = s[0];
         String userid = s[1];
 

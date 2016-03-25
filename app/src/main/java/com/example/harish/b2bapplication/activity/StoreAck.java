@@ -39,6 +39,8 @@ public class StoreAck {
             String userid = jObj.getString("userid");
             String  email = jObj.getString("email");
             String roll = jObj.getString("roll");
+            String mobile = jObj.getString("mobile");
+
             outputStream = c.openFileOutput(filename, c.MODE_PRIVATE);
             outputStream.write(ack.getBytes());
             outputStream.write("\n".getBytes());
@@ -47,6 +49,8 @@ public class StoreAck {
             outputStream.write(email.getBytes());
             outputStream.write("\n".getBytes());
             outputStream.write(roll.getBytes());
+            outputStream.write("\n".getBytes());
+            outputStream.write(mobile.getBytes());
             outputStream.write("\n".getBytes());
             outputStream.close();
             Log.d("<<<<<<<<<<<<<<<<<<<<<", "Ack in file");
@@ -63,7 +67,7 @@ public class StoreAck {
         try {
             inputStream = c.openFileInput(filename);
             BufferedReader buffer = new BufferedReader( new InputStreamReader(inputStream));
-            String line  [] = new String[4];
+            String line  [] = new String[6];
             String temp = null;
             int i = 0;
             while((temp=buffer.readLine())!= null )

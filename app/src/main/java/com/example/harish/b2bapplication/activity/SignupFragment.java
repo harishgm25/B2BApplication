@@ -212,7 +212,7 @@ public class SignupFragment extends Fragment {
             userFragment = new ManufactureFragment();
         if(s[3].equals("WholeSaler"))
             userFragment = new WholeSalerFragment();
-        if(s[3].equals("\"Retaile"))
+        if(s[3].equals("Retailer"))
             userFragment = new RetailerFragment();
 
 
