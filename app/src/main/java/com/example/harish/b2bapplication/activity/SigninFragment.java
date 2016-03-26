@@ -247,7 +247,7 @@ public class SigninFragment extends Fragment   {
         if (s[3].equals("WholeSeller"))
             userFragment = new WholeSalerFragment();
 
-        if (s[3].equals("Retaile"))
+        if (s[3].equals("Retailer"))
             userFragment = new RetailerFragment();
 
         FragmentManager fragmentManager = getFragmentManager();

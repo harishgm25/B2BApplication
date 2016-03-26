@@ -7,11 +7,9 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.text.InputType;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +19,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.harish.b2bapplication.R;
-import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
@@ -30,11 +27,9 @@ import com.msg91.sendotp.library.SendOtpVerification;
 import com.msg91.sendotp.library.Verification;
 import com.msg91.sendotp.library.VerificationListener;
 
-import org.apache.http.entity.mime.content.FileBody;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -62,10 +57,6 @@ public class SettingFragment extends Fragment implements VerificationListener{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-
-
     }
 
     @Override
@@ -89,25 +80,49 @@ public class SettingFragment extends Fragment implements VerificationListener{
                 @Override
                 public void onClick(View v) {
 
-                    newMobileVerification = true;
-                    ConnectionDetector connectionDetector = new ConnectionDetector(getContext());
-                    if (connectionDetector.isConnectingToInternet()) {
-                        Config config = SendOtpVerification.config().context(getContext().getApplicationContext())
-                                .build();
-                        mVerification = SendOtpVerification.createSmsVerification(config, _updatemobile.getText().toString(),settingFragment, "91", "");
-                        mVerification.initiate();
-                        progressDialog = new ProgressDialog(getContext());
-                        progressDialog.setCancelable(false);
-                        progressDialog.setIndeterminate(false);
-                        progressDialog.setMessage("Sending OTP to Current Mobile");
-                        progressDialog.show();
-                        timerDelayRemoveDialog(50000, progressDialog);
-                    }
-                    else
-                    {
-                        connectionDetector.showConnectivityStatus();
-                    }
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setCancelable(false);
+                    builder.setTitle("Want to Change Existing Mobile Number");
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            newMobileVerification = true;
+                            ConnectionDetector connectionDetector = new ConnectionDetector(getContext());
+                            if (connectionDetector.isConnectingToInternet()) {
+                                Config config = SendOtpVerification.config().context(getContext().getApplicationContext())
+                                        .build();
+                                mVerification = SendOtpVerification.createSmsVerification(config, _updatemobile.getText().toString(),settingFragment, "91", "");
+                                mVerification.initiate();
+                                progressDialog = new ProgressDialog(getContext());
+                                progressDialog.setCancelable(false);
+                                progressDialog.setIndeterminate(false);
+                                progressDialog.setMessage("Sending OTP to Current Mobile");
+                                progressDialog.show();
+                                timerDelayRemoveDialog(50000, progressDialog);
+                            }
+                            else
+                            {
+                                connectionDetector.showConnectivityStatus();
+                            }
 
+
+
+
+
+
+
+
+
+                        }
+                    });
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                            closeSoftKey();
+                        }
+                    });
+                    builder.show();
                 }
             });
 
