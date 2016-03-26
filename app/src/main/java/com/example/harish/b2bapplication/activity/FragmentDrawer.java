@@ -4,6 +4,7 @@ package com.example.harish.b2bapplication.activity;
         import android.app.Activity;
         import android.content.Context;
         import android.graphics.Bitmap;
+        import android.os.AsyncTask;
         import android.os.Bundle;
         import android.support.v4.app.Fragment;
         import android.support.v4.app.FragmentManager;
@@ -14,6 +15,7 @@ package com.example.harish.b2bapplication.activity;
         import android.support.v7.widget.RecyclerView;
         import android.support.v7.widget.Toolbar;
         import android.view.GestureDetector;
+        import android.view.Gravity;
         import android.view.LayoutInflater;
         import android.view.MotionEvent;
         import android.view.View;
@@ -43,6 +45,7 @@ public class FragmentDrawer extends Fragment {
     private static  ImageView profileImg;
     private static List navMenuList = null;
     private boolean isnewsignin = false;
+    private boolean profileimageloaded = false;
     private String userdata [];
     private Bitmap profileimgbit;
     private TextView email;
@@ -62,10 +65,13 @@ public class FragmentDrawer extends Fragment {
             for (int i = 0; i < titles.length; i++) {
                 NavDrawerItem navItem = new NavDrawerItem();
                 if(i==7) {
-                    if(msg.equals("signin"))
+                    if(msg.equals("signin")) {
                         navItem.setTitle("SIGNIN");
-                    else
+                    }
+                    else {
                         navItem.setTitle("LOGOUT");
+
+                    }
                 }
                 else
                 {
@@ -80,7 +86,30 @@ public class FragmentDrawer extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setFragment( new HomeFragment());
+
+        ConnectionDetector connectionDetector = new ConnectionDetector(getContext().getApplicationContext());
+        if (connectionDetector.isConnectingToInternet())
+        {
+            String [] s = new StoreAck().readFile(getContext().getApplicationContext());
+            if (s == null)
+                setFragment(new HomeFragment());
+            else {
+                if (s[3].equals("Manufacture"))
+                    setFragment( new ManufactureFragment());
+                if (s[3].equals("WholeSeller"))
+                    setFragment(new WholeSalerFragment());
+                if (s[3].equals("Retailer"))
+                    setFragment( new RetailerFragment());
+            }
+
+        }
+        else
+        {
+            connectionDetector.showConnectivityStatus();
+
+        }
+
+
         // drawer labels
         titles = getActivity().getResources().getStringArray(R.array.nav_drawer_labels);
 
@@ -113,6 +142,7 @@ public class FragmentDrawer extends Fragment {
         }
         else {
             isnewsignin = true;
+            profileimageloaded = false;
             profileImg.setEnabled(false);
             email.setText("Email");
             roll.setText("Anonynomous User");
@@ -149,31 +179,51 @@ public class FragmentDrawer extends Fragment {
                 super.onDrawerOpened(drawerView);
                 getActivity().invalidateOptionsMenu();
                 //Toggling with the login and sign with respect to their drawerlist and profile--------------------
+                    if(!profileimageloaded)
+                    {
+                        new AsyncTask<Void,Void,Void>(){
+                            @Override
+                            protected void onPreExecute() {
+                                super.onPreExecute();
+                            }
 
+                            @Override
+                            protected void onPostExecute(Void aVoid) {
+                                super.onPostExecute(aVoid);
+                                if (profileimgbit != null) {
+                                    profileImg.setImageBitmap(profileimgbit);
+                                    profileimageloaded = true;
+                                }
+                            }
+                            @Override
+                            protected Void doInBackground(Void... params) {
+                                profileimgbit = new StoreAck().readProfile(getActivity().getApplicationContext());
+                                return null;
+                            }
+                        }.execute();
+
+
+
+                    }
                     userdata = new StoreAck().readFile(getActivity().getApplicationContext());
-                    profileimgbit = new StoreAck().readProfile(getActivity().getApplicationContext());
                     email = (TextView) drawerView.findViewById(R.id.email);
                     roll = (TextView) drawerView.findViewById(R.id.roll);
-
-
                 if (userdata != null) {
                     if(isnewsignin) {
                         email.setText(userdata[2]);
                         roll.setText(userdata[3]);
                         profileImg.setEnabled(true);
-                        if (profileimgbit != null) {
-                            profileImg.setImageBitmap(profileimgbit);
-                            adapter = new NavigationDrawerAdapter(getActivity(), getData("logout"));
-                            recyclerView.setAdapter(adapter);
-                            isnewsignin = false;
-                            recyclerView.refreshDrawableState();
-                        }
+                        adapter = new NavigationDrawerAdapter(getActivity(), getData("logout"));
+                        recyclerView.setAdapter(adapter);
+                        isnewsignin = false;
+                        recyclerView.refreshDrawableState();
                     }
 
                 }
 
                 else {
                     isnewsignin =true;
+                    profileimageloaded = false;
                     profileImg.setEnabled(false);
                     email.setText("Email");
                     roll.setText("Anonynomous User");
@@ -181,7 +231,6 @@ public class FragmentDrawer extends Fragment {
                     adapter = new NavigationDrawerAdapter(getActivity(),getData("signin"));
                     recyclerView.setAdapter(adapter);
                     recyclerView.refreshDrawableState();
-
                 }
 
 

@@ -52,9 +52,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
     private Toolbar mToolbar;
     private FragmentDrawer drawerFragment;
-    private Button _sign = null;
     private ImageView _profileView = null;
-    private ProgressDialog progressdialog;
     private static final int CAMERA_REQUEST = 1888;
     private static final int SELECT_FILE = 2000;
     private Uri mImageUri;  // for temp image
@@ -187,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         if (fragment != null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.addToBackStack(null);
+            // fragmentTransaction.addToBackStack(null);
             fragmentTransaction.replace(R.id.container_body, fragment);
             fragmentTransaction.commit();
         }
@@ -209,8 +207,6 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                 fragmentTransaction.commit();
                 drawerLayout.closeDrawer(Gravity.LEFT); // closing DrawerLayOut Manually
             } else {
-
-
                 SigninFragment s = new SigninFragment();
                 Bundle bundles = new Bundle();
                 FragmentManager fragmentManager = getSupportFragmentManager();
@@ -448,8 +444,6 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             }
         });
     }
-
-
     //----------------Closing the ProgressDialog after given interval-------------------
     public void timerDelayRemoveDialog(long time, final Dialog d){
 

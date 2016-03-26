@@ -309,7 +309,7 @@ public class SigninFragment extends Fragment   {
     {
        // Loading Image form Server using Nested AsyncTask--------------------------------------------------------
 
-        new GetProfileImage(getContext()).execute();
+        new GetProfileImage(getContext().getApplicationContext()).execute();
     }
 
 
@@ -336,7 +336,7 @@ public class SigninFragment extends Fragment   {
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                 //converting orginal image to thumb
                 Bitmap ThumbImage = ThumbnailUtils.extractThumbnail(bmp,100,100);
-                ThumbImage.compress(Bitmap.CompressFormat.JPEG,100, bytes);
+                ThumbImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
                 new StoreAck().writeProfile(context, bytes);
 
             }
@@ -372,11 +372,14 @@ public class SigninFragment extends Fragment   {
                         if (response.has("profileImg")) {
                             try {
                                 imgUrl = response.getString("profileImg");
-                            } catch (JSONException e) {
+                                InputStream in = new URL(ip[0]+imgUrl).openStream();
+                                bmp = BitmapFactory.decodeStream(in);
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
 
                         }
+
 
                     }
 
@@ -389,8 +392,7 @@ public class SigninFragment extends Fragment   {
                 });
 
 
-                InputStream in = new URL(ip[0]+imgUrl).openStream();
-                bmp = BitmapFactory.decodeStream(in);
+
 
             } catch (Exception e) {
                 e.printStackTrace();
