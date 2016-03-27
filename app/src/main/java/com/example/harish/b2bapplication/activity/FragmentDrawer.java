@@ -94,12 +94,23 @@ public class FragmentDrawer extends Fragment {
             if (s == null)
                 setFragment(new HomeFragment());
             else {
-                if (s[3].equals("Manufacture"))
-                    setFragment( new ManufactureFragment());
-                if (s[3].equals("WholeSeller"))
-                    setFragment(new WholeSalerFragment());
-                if (s[3].equals("Retailer"))
-                    setFragment( new RetailerFragment());
+                Bundle arg = new Bundle();
+                arg.putSerializable("usertokens",s);
+                if (s[3].equals("Manufacture")) {
+                    ManufactureFragment manufactureFragment = new ManufactureFragment();
+                    manufactureFragment.setArguments(arg);
+                    setFragment(manufactureFragment);
+                }
+                if (s[3].equals("WholeSeller")) {
+                    WholeSalerFragment wholeSalerFragment = new WholeSalerFragment();
+                    wholeSalerFragment.setArguments(arg);
+                    setFragment(wholeSalerFragment);
+                }
+                if (s[3].equals("Retailer")) {
+                    RetailerFragment retailerFragment = new RetailerFragment();
+                    retailerFragment.setArguments(arg);
+                    setFragment(retailerFragment);
+                }
             }
 
         }

@@ -3,8 +3,10 @@ package com.example.harish.b2bapplication.activity;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.example.harish.b2bapplication.R;
+import com.example.harish.b2bapplication.adapter.MyTabAdapter;
 
 
 /**
@@ -20,8 +23,13 @@ import com.example.harish.b2bapplication.R;
 public class RetailerFragment extends Fragment {
 
     private AlertDialog.Builder builder;
+    public static TabLayout tabLayout;
+    public static ViewPager viewPager;
+    public static int int_items = 3 ;
+    private String s[];
 
     public RetailerFragment() {
+        s = new String[6];
         // Required empty public constructor
     }
 
@@ -37,9 +45,13 @@ public class RetailerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_retailer, container, false);
+        //View rootView = inflater.inflate(R.layout.fragment_catalogs, container, false);
+        View tabView =  inflater.inflate(R.layout.tab_layout,null);
+        tabLayout = (TabLayout) tabView.findViewById(R.id.tabs);
+        viewPager = (ViewPager) tabView.findViewById(R.id.viewpager);
         //Getting Bundle Serialized Object
         boolean isnewsignup =  getArguments().getBoolean("newsignup");
+        s = getArguments().getStringArray("usertokens");  // getting user tokens for previous fragments or activity
         //checking for new signup for profile filling
         if(isnewsignup)
         {
@@ -47,10 +59,24 @@ public class RetailerFragment extends Fragment {
             showDialog();
             getArguments().remove("newsignup");
         }
+        viewPager.setAdapter(new MyTabAdapter(getChildFragmentManager(),s));
+
+        /**
+         * Now , this is a workaround ,
+         * The setupWithViewPager dose't works without the runnable .
+         * Maybe a Support Library Bug .
+         */
+
+        tabLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                tabLayout.setupWithViewPager(viewPager);
+            }
+        });
 
 
         // Inflate the layout for this fragment
-        return rootView;
+        return tabView;
     }
 
     @Override

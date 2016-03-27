@@ -20,6 +20,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.style.BulletSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -244,7 +245,11 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                 if (s[3].equals("Retailer"))
                     userFragment = new RetailerFragment();
             }
+            // Getting User token and in from the file
 
+            Bundle arg = new Bundle();
+            arg.putSerializable("usertokens",s);
+            userFragment.setArguments(arg);
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.addToBackStack(null);

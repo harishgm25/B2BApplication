@@ -61,7 +61,7 @@ public class SigninFragment extends Fragment   {
     private String email;
     private ImageView _profileImg;
     private String password;
-    private ProgressDialog progressdialog;
+    private  ProgressDialog progressdialog;
     private String imgUrl;
     private JSONObject temp1;
     private String[] ip;
@@ -104,6 +104,12 @@ public class SigninFragment extends Fragment   {
                 password = _password.getText().toString();
                 ConnectionDetector connectionDetector = new ConnectionDetector(getContext());
                 if (connectionDetector.isConnectingToInternet()) {
+                    progressdialog = new ProgressDialog(getContext());
+                    progressdialog.setIndeterminate(false);
+                    progressdialog.setMessage("Signin Account...");
+                    progressdialog.show();
+                    timerDelayRemoveDialog(10000,progressdialog);
+
 
                     signin();
                 } else {
@@ -150,17 +156,10 @@ public class SigninFragment extends Fragment   {
             return;
         }
 
-
-        progressdialog = new ProgressDialog(getActivity());
-        progressdialog.setIndeterminate(false);
-        progressdialog.setMessage("Signin Account...");
-        progressdialog.show();
-        //timerDelayRemoveDialog(10000,progressdialog);
-
-        // TODO: Implement your own signup logic here.
+ // TODO: Implement your own signup logic here.
 
         new android.os.Handler().postDelayed(
-                new Runnable() {
+                 new Runnable() {
                     public void run() {
 
                         try {
@@ -194,7 +193,7 @@ public class SigninFragment extends Fragment   {
                                     // Getting email and roll of the user and written in the file
                                     new StoreAck().writeFile(c, temp1);
                                     onSigninSuccess();
-                                    progressdialog.dismiss();
+
                                 }
                                 else
                                 {
@@ -220,15 +219,15 @@ public class SigninFragment extends Fragment   {
                             onSigninFailed("Check Connectivity Try Later");
                         }
                     }
-                }, 3000);
+
+                 },100);
 
 
     }
-
-
     public void onSigninSuccess() {
        // _signin.setEnabled(true);
         Log.d("----------", "SigninSuccess");
+        progressdialog.dismiss();
         callAsyncProfileImageTask();
 
 
@@ -249,7 +248,9 @@ public class SigninFragment extends Fragment   {
 
         if (s[3].equals("Retailer"))
             userFragment = new RetailerFragment();
-
+        Bundle arg = new Bundle();
+        arg.putSerializable("usertokens",s);   // sending user tokens to next fragment or activity
+        userFragment.setArguments(arg);
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.container_body, userFragment);

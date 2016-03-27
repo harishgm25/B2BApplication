@@ -195,7 +195,7 @@ public class SignupFragment extends Fragment {
                         }catch (IOException e){e.printStackTrace();}
                          catch (JSONException e) {e.printStackTrace();}
                     }
-                }, 3000);
+                },100);
     }
 
 
