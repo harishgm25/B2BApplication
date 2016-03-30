@@ -108,7 +108,7 @@ public class SigninFragment extends Fragment   {
                     progressdialog.setIndeterminate(false);
                     progressdialog.setMessage("Signin Account...");
                     progressdialog.show();
-                    timerDelayRemoveDialog(10000,progressdialog);
+                    timerDelayRemoveDialog(50000,progressdialog);
 
 
                     signin();
@@ -243,11 +243,11 @@ public class SigninFragment extends Fragment   {
         String s[] = new StoreAck().readFile(getContext().getApplicationContext());
         if (s[3].equals("Manufacture"))
             userFragment = new ManufactureFragment();
-        if (s[3].equals("WholeSeller"))
+        if (s[3].equals("WholeSaler"))
             userFragment = new WholeSalerFragment();
-
         if (s[3].equals("Retailer"))
             userFragment = new RetailerFragment();
+
         Bundle arg = new Bundle();
         arg.putSerializable("usertokens",s);   // sending user tokens to next fragment or activity
         userFragment.setArguments(arg);

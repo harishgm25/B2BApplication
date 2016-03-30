@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                 break;
             case 3://sandeep block
 
-                fragment = new ProductFragment();
+                //fragment = new ProductFragment();
                 title = toggletitle;
                 break;
 
@@ -240,7 +240,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             else {
                 if (s[3].equals("Manufacture"))
                     userFragment = new ManufactureFragment();
-                if (s[3].equals("WholeSeller"))
+                if (s[3].equals("WholeSaler"))
                     userFragment = new WholeSalerFragment();
                 if (s[3].equals("Retailer"))
                     userFragment = new RetailerFragment();

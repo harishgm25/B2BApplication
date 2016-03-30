@@ -104,15 +104,6 @@ public class SettingFragment extends Fragment implements VerificationListener{
                             {
                                 connectionDetector.showConnectivityStatus();
                             }
-
-
-
-
-
-
-
-
-
                         }
                     });
                     builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

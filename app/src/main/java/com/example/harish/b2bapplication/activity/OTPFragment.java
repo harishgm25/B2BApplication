@@ -60,7 +60,6 @@ public class OTPFragment extends Fragment implements VerificationListener {
          _mobile = (EditText)rootView.findViewById(R.id.input_mobile);
          _verifyotp = (Button)rootView.findViewById(R.id.btn_signup_otp);
          otpFragment = this;
-
         _verifyotp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,7 +95,7 @@ public class OTPFragment extends Fragment implements VerificationListener {
     }
 
     @Override
-    public void onAttach(Activity activity) {
+    public void onAttach(Activity  activity) {
         super.onAttach(activity);
     }
 
@@ -105,7 +104,7 @@ public class OTPFragment extends Fragment implements VerificationListener {
         super.onDetach();
     }
 
-    public  void  showDialog()
+    public  void showDialog()
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setCancelable(false);
@@ -153,18 +152,12 @@ public class OTPFragment extends Fragment implements VerificationListener {
 
         progressDialog.dismiss();
         showDialog();
-
-
     }
 
     @Override
     public void onInitiationFailed(Exception paramException) {
-
-
+        Toast.makeText(getContext(), "Please Try Later", Toast.LENGTH_LONG).show();
         progressDialog.dismiss();
-        showDialog();
-
-
     }
 
     @Override
