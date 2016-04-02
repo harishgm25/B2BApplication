@@ -1,0 +1,61 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="info.androidhive.materialdesign.activity.HomeFragment">
+    <LinearLayout
+        android:id="@+id/thumbnail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dip"
+        android:layout_centerHorizontal="true"
+        android:padding="3dip" >
+        <com.android.volley.toolbox.NetworkImageView
+            android:id="@+id/img_profile"
+            android:contentDescription="@string/app_name"
+            android:layout_width="120dip"
+            android:layout_height="160dip"
+            android:src="@drawable/ic_action_profile" />
+    </LinearLayout>
+    <TextView
+        android:id="@+id/profile_firmname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/thumbnail"
+        android:layout_centerHorizontal="true"
+        android:text=" "
+        android:textColor="#040404"
+        android:typeface="sans"
+        android:textSize="15dip"
+        android:textStyle="bold"/>
+
+
+    <TextView
+        android:id="@+id/profile_roll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/profile_firmname"
+        android:textColor="@android:color/holo_green_dark"
+        android:layout_centerHorizontal="true"
+        android:textSize="13dip"
+        android:layout_marginTop="1dip"
+        android:text=""
+        android:layout_alignParentStart="false"
+        android:layout_alignParentEnd="false" />
+
+    <TextView
+        android:id="@+id/profile_billingaddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/profile_roll"
+        android:layout_centerHorizontal="true"
+        android:textColor="#343434"
+        android:textSize="10dip"
+        android:layout_marginTop="1dip"
+        android:text=""
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentStart="false" />
+
+
+</RelativeLayout>

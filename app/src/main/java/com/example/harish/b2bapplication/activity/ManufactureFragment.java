@@ -127,7 +127,6 @@ public class ManufactureFragment extends Fragment {
     }
     public void callProfileFragment()
     {
-
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.replace(R.id.container_body, new ProfileFragment());

@@ -3,11 +3,6 @@ package com.example.harish.b2bapplication.adapter;
 /**
  * Created by harish on 30/3/16.
  */
-import com.example.harish.b2bapplication.R;
-import com.example.harish.b2bapplication.app.AppController;
-import com.example.harish.b2bapplication.model.Profile;
-
-import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
@@ -19,14 +14,19 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.example.harish.b2bapplication.R;
+import com.example.harish.b2bapplication.app.AppController;
+import com.example.harish.b2bapplication.model.Profile;
 
-public class ProfileListAdapter extends BaseAdapter {
+import java.util.List;
+
+public class ConnectionRequestListAdapter extends BaseAdapter {
     private Activity activity;
     private LayoutInflater inflater;
     private List<Profile> profilesItems;
     ImageLoader imageLoader = AppController.getInstance().getImageLoader();
 
-    public ProfileListAdapter(Activity activity, List<Profile> profilesItems) {
+    public ConnectionRequestListAdapter(Activity activity, List<Profile> profilesItems) {
         this.activity = activity;
         this.profilesItems = profilesItems;
     }
@@ -54,7 +54,7 @@ public class ProfileListAdapter extends BaseAdapter {
             inflater = (LayoutInflater) activity
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (convertView == null)
-            convertView = inflater.inflate(R.layout.fragment_findconnections_gridview, null);
+            convertView = inflater.inflate(R.layout.fragment_connection_request_listview, null);
 
         if (imageLoader == null)
             imageLoader = AppController.getInstance().getImageLoader();

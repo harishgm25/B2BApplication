@@ -1,8 +1,6 @@
 package com.example.harish.b2bapplication.activity;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,8 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.ListView;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -20,14 +18,15 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.harish.b2bapplication.adapter.ProfileListAdapter;
-import com.example.harish.b2bapplication.model.FindConnectionJSONParser;
 import com.example.harish.b2bapplication.R;
+import com.example.harish.b2bapplication.adapter.ConnectionRequestListAdapter;
+import com.example.harish.b2bapplication.model.FindConnectionJSONParser;
 import com.example.harish.b2bapplication.model.Profile;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,42 +35,42 @@ import java.util.Map;
 /**
  * Created by harish on 4/3/16.
  */
-public class FindConnectionFragment extends Fragment {
+public class ConnectionRequestListFragment extends Fragment {
+
     private String usertokens [];
     private String ack;
     private String userid;
-    private ProfileListAdapter adapter;
-    private ProgressDialog pDialog;
-  //  private  ListView listView;
-    private  GridView listView;
-    private  FindConnectionFragment findConnectionFragment;
+    private ConnectionRequestListAdapter adapter;
+    private ListView listView;
+    private String s[];
 
-
-    public FindConnectionFragment() {
+    public ConnectionRequestListFragment() {
         // Required empty public constructor
-        findConnectionFragment = this;
-    }
-    @SuppressLint("ValidFragment")
-    public FindConnectionFragment(String s[]) {
-        usertokens =s;
-        // Required empty public constructor
+        s = new String[6];
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
+
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.fragment_findconnections, container, false);
-        //TextView label = (TextView)rootView.findViewById(R.id.label);
-       // label.setText(usertokens[3]);
-        ack = usertokens[0];
-        userid= usertokens[1];
-        listView = (GridView)rootView.findViewById(R.id.lv_profiles);
+        View rootView = inflater.inflate(R.layout.fragment_connection_request, container, false);
+        if(getArguments() != null) {
+            s = getArguments().getStringArray("usertokens");  // getting user tokens for previous fragments or activity
+
+        }
+
+
+        ack = s[0];
+        userid= s[1];
+        listView = (ListView)rootView.findViewById(R.id.lv_connection_request);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
@@ -106,7 +105,7 @@ public class FindConnectionFragment extends Fragment {
                         @Override
                         public void onResponse(String response) {
                             // response
-                           // Log.d("Response+++===", response);
+                            // Log.d("Response+++===", response);
                             JSONObject jsnobject = null;
                             try {
                                 jsnobject = new JSONObject(response);
@@ -119,7 +118,7 @@ public class FindConnectionFragment extends Fragment {
                             }
 
 
-                            adapter = new ProfileListAdapter(getActivity(),profileList);
+                            adapter = new ConnectionRequestListAdapter(getActivity(),profileList);
                             listView.setAdapter(adapter);
                             adapter.notifyDataSetChanged();
 

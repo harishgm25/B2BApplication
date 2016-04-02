@@ -61,6 +61,13 @@ public class FindConnectionJSONParser {
              {
 
                  JSONObject obj = (JSONObject) completeprofile.get(i);
+                 if(i==0)
+                 {
+                     profile.setNameoffrim(obj.getString("nameoffirm"));
+                     profile.setEstyear(obj.getString("estyear"));
+                     profile.setBillingaddress(obj.getString("billingaddress"));
+
+                 }
                  if(i == 1) {
 
                      profile.setThumbnailUrl(ip+obj.getString("imagepath"));
@@ -70,6 +77,9 @@ public class FindConnectionJSONParser {
                      profiletmobile = obj.getString("mobile");
                      profile.setEmail(profileemail);
                      profile.setMobile(profiletmobile);
+                     profile.setRoll(obj.getString("roll"));
+                     profile.setUserid(obj.getString("_id"));
+
                  }
                  Log.d("data------------>", profile.getEmail() + " " + profile.getMobile() + " " + profile.getThumbnailUrl());
 

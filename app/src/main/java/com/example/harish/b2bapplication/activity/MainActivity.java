@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
             mToolbar = (Toolbar) findViewById(R.id.toolbar);
+            mToolbar.setTitle("");
             setSupportActionBar(mToolbar);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             s = new String[5];
@@ -175,7 +176,16 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                 //fragment = new ProductFragment();
                 title = toggletitle;
                 break;
-
+            case 4:
+                    if(toggletitle.equals("SIGNIN"))
+                    {
+                        signinout(toggletitle);
+                    }
+                    else
+                     {
+                        getConnectionRequestFragment();
+                     }
+                    break;
             case 7:
                     signinout(toggletitle);
                     break;
@@ -186,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         if (fragment != null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            // fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.addToBackStack(null);
             fragmentTransaction.replace(R.id.container_body, fragment);
             fragmentTransaction.commit();
         }
@@ -226,14 +236,12 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
     }
 
-    public void getUserHome()
-    {
+    public void getUserHome() {
         s = new StoreAck().readFile(getApplicationContext().getApplicationContext());
         ConnectionDetector connectionDetector = new ConnectionDetector(getApplicationContext());
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         Fragment userFragment = null;
-        if (connectionDetector.isConnectingToInternet())
-        {
+        if (connectionDetector.isConnectingToInternet()) {
 
             if (s == null)
                 userFragment = new HomeFragment();
@@ -248,7 +256,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             // Getting User token and in from the file
 
             Bundle arg = new Bundle();
-            arg.putSerializable("usertokens",s);
+            arg.putSerializable("usertokens", s);
             userFragment.setArguments(arg);
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -256,14 +264,44 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             fragmentTransaction.replace(R.id.container_body, userFragment);
             fragmentTransaction.commit();
             return;
-        }
-        else
-        {
+        } else {
             connectionDetector.showConnectivityStatus();
             drawerLayout.closeDrawer(Gravity.LEFT); // closing DrawerLayOut Manually
         }
-
     }
+        public void getConnectionRequestFragment()
+        {
+            s = new StoreAck().readFile(getApplicationContext().getApplicationContext());
+            ConnectionDetector connectionDetector = new ConnectionDetector(getApplicationContext());
+            DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+            Fragment userFragment = null;
+            if (connectionDetector.isConnectingToInternet())
+            {
+
+                if (s == null)
+                    userFragment = new HomeFragment();
+                else {
+                    // Getting User token and in from the file
+                    userFragment = new ConnectionRequestListFragment();
+                    Bundle arg = new Bundle();
+                    arg.putSerializable("usertokens", s);
+                    userFragment.setArguments(arg);
+                    }
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.replace(R.id.container_body, userFragment);
+                fragmentTransaction.commit();
+            }
+            else
+            {
+                connectionDetector.showConnectivityStatus();
+                drawerLayout.closeDrawer(Gravity.LEFT); // closing DrawerLayOut Manually
+            }
+
+        }
+
+
 
     public void callProfileFragment(String title)
     {
