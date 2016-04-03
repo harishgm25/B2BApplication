@@ -54,7 +54,7 @@ public class ConnectionRequestListAdapter extends BaseAdapter {
             inflater = (LayoutInflater) activity
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (convertView == null)
-            convertView = inflater.inflate(R.layout.fragment_connection_request_listview, null);
+            convertView = inflater.inflate(R.layout.fragment_connection_my_request_listview, null);
 
         if (imageLoader == null)
             imageLoader = AppController.getInstance().getImageLoader();
@@ -63,6 +63,7 @@ public class ConnectionRequestListAdapter extends BaseAdapter {
         TextView firmname = (TextView) convertView.findViewById(R.id.profile_firmname);
         TextView billingaddress = (TextView) convertView.findViewById(R.id.profile_billingaddress);
         TextView roll =(TextView) convertView.findViewById(R.id.profile_roll);
+        TextView status = (TextView) convertView.findViewById(R.id.connection_request_status);
 
         // getting movie data for the row
         Profile p = profilesItems.get(position);
@@ -77,6 +78,8 @@ public class ConnectionRequestListAdapter extends BaseAdapter {
         billingaddress.setText(p.getBillingaddress());
 
         roll.setText(p.getRoll());
+
+        status.setText(p.getConnectionstatus());
 
 
         return convertView;

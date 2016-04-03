@@ -3,7 +3,10 @@ package com.example.harish.b2bapplication.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,10 +20,14 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.harish.b2bapplication.R;
 import com.example.harish.b2bapplication.adapter.ConnectionRequestListAdapter;
+import com.example.harish.b2bapplication.adapter.MyConncetionStatusTabAdapter;
+import com.example.harish.b2bapplication.adapter.MyTabAdapter;
 import com.example.harish.b2bapplication.model.FindConnectionJSONParser;
+import com.example.harish.b2bapplication.model.FindConnectionStatusJSONParser;
 import com.example.harish.b2bapplication.model.Profile;
 
 import org.json.JSONArray;
@@ -37,11 +44,8 @@ import java.util.Map;
  */
 public class ConnectionRequestListFragment extends Fragment {
 
-    private String usertokens [];
-    private String ack;
-    private String userid;
-    private ConnectionRequestListAdapter adapter;
-    private ListView listView;
+    public static TabLayout tabLayout;
+    public static ViewPager viewPager;
     private String s[];
 
     public ConnectionRequestListFragment() {
@@ -52,113 +56,32 @@ public class ConnectionRequestListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-
-
-    }
+ }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_connection_request, container, false);
+
+        View tabView =  inflater.inflate(R.layout.tab_layout,null);
+        tabLayout = (TabLayout) tabView.findViewById(R.id.tabs);
+        viewPager = (ViewPager) tabView.findViewById(R.id.viewpager);
+
         if(getArguments() != null) {
             s = getArguments().getStringArray("usertokens");  // getting user tokens for previous fragments or activity
 
         }
+        viewPager.setAdapter(new MyConncetionStatusTabAdapter(getChildFragmentManager(),s));
 
 
-        ack = s[0];
-        userid= s[1];
-        listView = (ListView)rootView.findViewById(R.id.lv_connection_request);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
+        tabLayout.post(new Runnable() {
             @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                // TODO Auto-generated method stub
-                Profile profile = (Profile) adapter.getItem(arg2);
-                Log.d("profile", profile.toString());
-                Bundle arg = new Bundle();
-                arg.putSerializable("userprofile", profile);
-
-
-                Intent completeProfile= new Intent(getActivity(),ConnectionActivty.class);
-                completeProfile.putExtra("ack",ack);
-                completeProfile.putExtra("userid",userid);
-                completeProfile.putExtra("profile",profile);
-                startActivity(completeProfile);
-
-
+            public void run() {
+                tabLayout.setupWithViewPager(viewPager);
             }
         });
 
-
-        ConnectionDetector connectionDetector = new ConnectionDetector(getContext());
-        if (connectionDetector.isConnectingToInternet()) {
-
-            String[] ip = getActivity().getResources().getStringArray(R.array.ip_address);
-            StringRequest postRequest = new StringRequest(Request.Method.POST, ip[0]+"api/v1/profiles/showconnectionprofile",
-                    new Response.Listener<String>()
-                    {
-                        String[] ip = getActivity().getResources().getStringArray(R.array.ip_address);
-                        List profileList;
-                        @Override
-                        public void onResponse(String response) {
-                            // response
-                            // Log.d("Response+++===", response);
-                            JSONObject jsnobject = null;
-                            try {
-                                jsnobject = new JSONObject(response);
-                                JSONArray profileArray = jsnobject.getJSONArray("profile");
-                                FindConnectionJSONParser profileJSONParser = new FindConnectionJSONParser();
-                                profileList = profileJSONParser.parse(profileArray,ip[0]);
-                                String name = "temp";
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-
-
-                            adapter = new ConnectionRequestListAdapter(getActivity(),profileList);
-                            listView.setAdapter(adapter);
-                            adapter.notifyDataSetChanged();
-
-
-
-
-                        }
-                    },
-                    new Response.ErrorListener()
-                    {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            // error
-                            Log.d("Error.Response",error.toString());
-                        }
-                    }
-
-            ) {
-                @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                    Map<String, String>  params = new HashMap<String, String>();
-                    params.put("Authorization", "Token token=\"" + ack + "\"");
-                    params.put("Accept", "application/json");
-                    params.put("Content-type", "application/json");
-
-                    return params;
-                }
-            };
-            RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-            requestQueue.add(postRequest);
-
-        }
-        else
-        {
-            connectionDetector.showConnectivityStatus();
-        }
-
-
         // Inflate the layout for this fragment
-        return rootView;
+        return tabView;
     }
 
     @Override

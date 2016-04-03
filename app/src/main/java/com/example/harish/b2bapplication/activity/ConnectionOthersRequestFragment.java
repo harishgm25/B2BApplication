@@ -2,7 +2,6 @@ package com.example.harish.b2bapplication.activity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,23 +10,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.ListView;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.harish.b2bapplication.adapter.ProfileListAdapter;
-import com.example.harish.b2bapplication.model.FindConnectionJSONParser;
 import com.example.harish.b2bapplication.R;
-import com.example.harish.b2bapplication.model.Profile;
+import com.example.harish.b2bapplication.adapter.ConnectionRequestListAdapter;
+import com.example.harish.b2bapplication.model.FindConnectionStatusJSONParser;
+import com.example.harish.b2bapplication.model.ProfileOfOtherRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,47 +36,46 @@ import java.util.Map;
 /**
  * Created by harish on 4/3/16.
  */
-public class FindConnectionFragment extends Fragment {
+public class ConnectionOthersRequestFragment extends Fragment {
     private String usertokens [];
     private String ack;
     private String userid;
-    private ProfileListAdapter adapter;
-    private ProgressDialog pDialog;
-  //  private  ListView listView;
-    private  GridView listView;
-    private  FindConnectionFragment findConnectionFragment;
+    private ConnectionRequestListAdapter adapter;
+    private ListView listView;
+    private String s[];
 
 
-    public FindConnectionFragment() {
+    public ConnectionOthersRequestFragment() {
         // Required empty public constructor
-        findConnectionFragment = this;
     }
+
     @SuppressLint("ValidFragment")
-    public FindConnectionFragment(String s[]) {
-        usertokens =s;
+    public ConnectionOthersRequestFragment(String[] usertokens) {
         // Required empty public constructor
+        this.usertokens=usertokens;
     }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+
 
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.fragment_findconnections, container, false);
-
+        View rootView = inflater.inflate(R.layout.fragment_connection_others_request, container, false);
         ack = usertokens[0];
         userid= usertokens[1];
-        listView = (GridView)rootView.findViewById(R.id.lv_profiles);
+        listView = (ListView)rootView.findViewById(R.id.lv_connection_other_request);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
                 // TODO Auto-generated method stub
-                Profile profile = (Profile) adapter.getItem(arg2);
+                ProfileOfOtherRequest profile = (ProfileOfOtherRequest) adapter.getItem(arg2);
                 Log.d("profile", profile.toString());
                 Bundle arg = new Bundle();
                 arg.putSerializable("userprofile", profile);
@@ -97,20 +96,28 @@ public class FindConnectionFragment extends Fragment {
         if (connectionDetector.isConnectingToInternet()) {
 
             String[] ip = getActivity().getResources().getStringArray(R.array.ip_address);
-            StringRequest postRequest = new StringRequest(Request.Method.POST, ip[0]+"api/v1/profiles/showconnectionprofile",
-                    new Response.Listener<String>()
+            JSONObject holderData = new JSONObject();
+            JSONObject childData = new JSONObject();
+            try {
+                childData.put("user_id",userid);
+                holderData.put("findconnection", childData);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            JsonObjectRequest postRequest = new JsonObjectRequest(Request.Method.POST,ip[0]+"api/v1/findconnections/getotherfriendrequeststatus",holderData,
+                    new Response.Listener<JSONObject>()
                     {
+                        List profileList = null;
                         String[] ip = getActivity().getResources().getStringArray(R.array.ip_address);
-                        List profileList;
                         @Override
-                        public void onResponse(String response) {
-                            // response
-                           // Log.d("Response+++===", response);
+
+                        public void onResponse(JSONObject response) {
+                            System.out.println(response);
                             JSONObject jsnobject = null;
                             try {
-                                jsnobject = new JSONObject(response);
-                                JSONArray profileArray = jsnobject.getJSONArray("profile");
-                                FindConnectionJSONParser profileJSONParser = new FindConnectionJSONParser();
+                                jsnobject = response;
+                                JSONArray profileArray = jsnobject.getJSONArray("otherfriendrequest");
+                                FindConnectionStatusJSONParser profileJSONParser = new FindConnectionStatusJSONParser();
                                 profileList = profileJSONParser.parse(profileArray,ip[0]);
                                 String name = "temp";
                             } catch (JSONException e) {
@@ -118,12 +125,9 @@ public class FindConnectionFragment extends Fragment {
                             }
 
 
-                            adapter = new ProfileListAdapter(getActivity(),profileList);
+                            adapter = new ConnectionRequestListAdapter(getActivity(),profileList);
                             listView.setAdapter(adapter);
                             adapter.notifyDataSetChanged();
-
-
-
 
                         }
                     },
@@ -131,22 +135,27 @@ public class FindConnectionFragment extends Fragment {
                     {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            // error
-                            Log.d("Error.Response",error.toString());
+                            System.out.println(error);
                         }
-                    }
+                    })
+            {
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    Map<String, String>  params = new HashMap<String, String>();
+                    params.put("findconnection[user_id]",userid);
 
-            ) {
+                    return super.getParams();
+                }
                 @Override
                 public Map<String, String> getHeaders() throws AuthFailureError {
-                    Map<String, String>  params = new HashMap<String, String>();
+                    Map<String, String> params = new HashMap<String, String>();
                     params.put("Authorization", "Token token=\"" + ack + "\"");
                     params.put("Accept", "application/json");
                     params.put("Content-type", "application/json");
-
                     return params;
                 }
             };
+
             RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
             requestQueue.add(postRequest);
 
@@ -155,6 +164,9 @@ public class FindConnectionFragment extends Fragment {
         {
             connectionDetector.showConnectivityStatus();
         }
+
+
+
 
 
         // Inflate the layout for this fragment
@@ -170,12 +182,5 @@ public class FindConnectionFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
     }
-
-
-
-
-
-
 }
-
 

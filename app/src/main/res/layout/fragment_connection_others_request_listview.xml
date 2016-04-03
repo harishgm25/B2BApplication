@@ -8,23 +8,25 @@
         android:id="@+id/thumbnail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="5dip"
-        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="5dip"
+        android:layout_marginTop="5dip"
         android:padding="3dip" >
         <com.android.volley.toolbox.NetworkImageView
             android:id="@+id/img_profile"
             android:contentDescription="@string/app_name"
-            android:layout_width="120dip"
-            android:layout_height="160dip"
             android:scaleType="centerCrop"
+            android:layout_width="100dip"
+            android:layout_height="80dip"
             android:src="@drawable/ic_action_profile" />
     </LinearLayout>
+
     <TextView
         android:id="@+id/profile_firmname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/thumbnail"
-        android:layout_centerHorizontal="true"
+        android:layout_toEndOf="@+id/thumbnail"
+        android:layout_marginLeft="5dip"
+        android:layout_marginTop="5dip"
         android:text=" "
         android:textColor="#040404"
         android:typeface="sans"
@@ -36,11 +38,12 @@
         android:id="@+id/profile_roll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/profile_firmname"
+        android:layout_below="@+id/profile_firmname"
+        android:layout_toEndOf="@+id/thumbnail"
+        android:layout_marginLeft="5dip"
+        android:layout_marginTop="5dip"
         android:textColor="@android:color/holo_green_dark"
-        android:layout_centerHorizontal="true"
         android:textSize="13dip"
-        android:layout_marginTop="1dip"
         android:text=""
         android:layout_alignParentStart="false"
         android:layout_alignParentEnd="false" />
@@ -50,13 +53,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/profile_roll"
-        android:layout_centerHorizontal="true"
+        android:layout_toEndOf="@+id/thumbnail"
+        android:layout_marginLeft="5dip"
+        android:layout_marginTop="5dip"
         android:textColor="#343434"
         android:textSize="10dip"
-        android:layout_marginTop="1dip"
         android:text=""
         android:layout_alignParentEnd="false"
         android:layout_alignParentStart="false" />
+
+
+
+    <TextView
+        android:id="@+id/connection_request_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:textAlignment="gravity"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="5dip"
+        android:layout_marginRight="10dip"
+        android:layout_marginTop="5dip"
+        android:textColor="@android:color/holo_green_dark"
+        android:textSize="13dip"
+        android:textStyle="bold"
+        android:text=""
+         />
 
 
 </RelativeLayout>
