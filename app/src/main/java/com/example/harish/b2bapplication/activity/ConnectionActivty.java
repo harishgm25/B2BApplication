@@ -1,14 +1,9 @@
 package com.example.harish.b2bapplication.activity;
 
 
-import android.app.ProgressDialog;
-import android.content.Intent;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -22,16 +17,10 @@ import com.example.harish.b2bapplication.util.CustomVolleyRequestQueue;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.loopj.android.http.ResponseHandlerInterface;
-import com.loopj.android.http.SyncHttpClient;
 
 import org.json.JSONObject;
 
-import java.io.InputStream;
-import java.net.URL;
-
 import cz.msebera.android.httpclient.Header;
-import cz.msebera.android.httpclient.HttpResponse;
 
 
 /**
@@ -57,7 +46,7 @@ public class ConnectionActivty extends ActionBarActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_connection);
+        setContentView(R.layout.activity_connection);
 
         imageView = (NetworkImageView) findViewById(R.id.fullprofileimage);
         firmname =(TextView) findViewById(R.id.firmname);
@@ -145,6 +134,7 @@ public class ConnectionActivty extends ActionBarActivity {
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
                 Toast.makeText(ConnectionActivty.this, "Request Connection Send", Toast.LENGTH_LONG).show();
+                ConnectionActivty.this.finish();
 
 
             }

@@ -6,6 +6,8 @@ package com.example.harish.b2bapplication.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,7 +81,13 @@ public class ConnectionRequestListAdapter extends BaseAdapter {
 
         roll.setText(p.getRoll());
 
+        if(p.getConnectionstatus().equals("waiting"))
+        {
+         status.setTextColor(Color.RED);
+        }
+
         status.setText(p.getConnectionstatus());
+
 
 
         return convertView;

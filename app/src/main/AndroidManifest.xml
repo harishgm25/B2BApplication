@@ -25,6 +25,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.ConnectionActivty"/>
+        <activity android:name=".activity.ConnectionApproveActivty"/>
+        <activity android:name=".activity.ConnectionApprovedActivty"/>
+        <service android:name=".activity.NotificationService" ></service>
+        <receiver android:name=".activity.NotificationAlaramService" />
     </application>
 
 </manifest>

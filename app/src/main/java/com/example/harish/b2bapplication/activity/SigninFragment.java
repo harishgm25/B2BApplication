@@ -61,14 +61,14 @@ public class SigninFragment extends Fragment   {
     private String email;
     private ImageView _profileImg;
     private String password;
-    private  ProgressDialog progressdialog;
     private String imgUrl;
     private JSONObject temp1;
     private String[] ip;
     private  Bitmap bmp;
 
     private FileOutputStream fos;
-    private ProgressDialog progressDialog;
+
+
 
     public SigninFragment() {
         // Required empty public constructor
@@ -104,12 +104,6 @@ public class SigninFragment extends Fragment   {
                 password = _password.getText().toString();
                 ConnectionDetector connectionDetector = new ConnectionDetector(getContext());
                 if (connectionDetector.isConnectingToInternet()) {
-                    progressdialog = new ProgressDialog(getContext());
-                    progressdialog.setIndeterminate(false);
-                    progressdialog.setMessage("Signin Account...");
-                    progressdialog.show();
-                    timerDelayRemoveDialog(50000,progressdialog);
-
 
                     signin();
                 } else {
@@ -158,6 +152,11 @@ public class SigninFragment extends Fragment   {
 
  // TODO: Implement your own signup logic here.
 
+
+        final ProgressDialog progressdialog = ProgressDialog.show(getContext(), "Please wait","Logging In" ,true);
+        progressdialog.setCancelable(false);
+        progressdialog.show();
+        timerDelayRemoveDialog(5000,progressdialog);
         new android.os.Handler().postDelayed(
                  new Runnable() {
                     public void run() {
@@ -193,15 +192,19 @@ public class SigninFragment extends Fragment   {
                                     // Getting email and roll of the user and written in the file
                                     new StoreAck().writeFile(c, temp1);
                                     onSigninSuccess();
+                                    progressdialog.dismiss();
+
 
                                 }
                                 else
                                 {
                                     onSigninFailed(temp1.getString("error"));
+                                    progressdialog.dismiss();
                                 }
                             } else {
 
                                 onSigninFailed(temp1.getString("error"));
+                                progressdialog.dismiss();
                             }
 
 
@@ -227,7 +230,7 @@ public class SigninFragment extends Fragment   {
     public void onSigninSuccess() {
        // _signin.setEnabled(true);
         Log.d("----------", "SigninSuccess");
-        progressdialog.dismiss();
+
         callAsyncProfileImageTask();
 
 
@@ -259,7 +262,7 @@ public class SigninFragment extends Fragment   {
     }
 
     public void onSigninFailed(String msg) {
-        progressdialog.dismiss();
+
         Toast.makeText(getContext(), msg, Toast.LENGTH_LONG).show();
         _signin.setEnabled(true);
     }

@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ListView;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -36,23 +36,22 @@ import java.util.Map;
 /**
  * Created by harish on 4/3/16.
  */
-public class FindConnectionFragment extends Fragment {
+public class FindConnectionGridFragment extends Fragment {
     private String usertokens [];
     private String ack;
     private String userid;
     private ProfileListAdapter adapter;
     private ProgressDialog pDialog;
-  //  private  ListView listView;
     private  GridView listView;
-    private  FindConnectionFragment findConnectionFragment;
+    private FindConnectionGridFragment findConnectionGridFragment;
 
 
-    public FindConnectionFragment() {
+    public FindConnectionGridFragment() {
         // Required empty public constructor
-        findConnectionFragment = this;
+        findConnectionGridFragment = this;
     }
     @SuppressLint("ValidFragment")
-    public FindConnectionFragment(String s[]) {
+    public FindConnectionGridFragment(String s[]) {
         usertokens =s;
         // Required empty public constructor
     }
@@ -112,7 +111,7 @@ public class FindConnectionFragment extends Fragment {
                                 JSONArray profileArray = jsnobject.getJSONArray("profile");
                                 FindConnectionJSONParser profileJSONParser = new FindConnectionJSONParser();
                                 profileList = profileJSONParser.parse(profileArray,ip[0]);
-                                String name = "temp";
+                                pDialog.dismiss();
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -133,6 +132,7 @@ public class FindConnectionFragment extends Fragment {
                         public void onErrorResponse(VolleyError error) {
                             // error
                             Log.d("Error.Response",error.toString());
+                            pDialog.dismiss();
                         }
                     }
 
@@ -149,6 +149,9 @@ public class FindConnectionFragment extends Fragment {
             };
             RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
             requestQueue.add(postRequest);
+            pDialog = new ProgressDialog(getActivity());
+            pDialog.setMessage("Fetching The File....");
+            pDialog.show();
 
         }
         else

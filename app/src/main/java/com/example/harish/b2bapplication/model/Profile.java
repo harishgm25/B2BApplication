@@ -8,13 +8,13 @@ import java.util.ArrayList;
 
 public class Profile implements Serializable {
     private String email,mobile, thumbnailUrl,billingaddress,nameoffrim,estyear,roll;
-    private String userid,connectionstatus;
+    private String userid,friendid,connectionstatus,website;
 
 
     public Profile() {
     }
 
-    public Profile(String connectionstatus,String userid,String email,String mobile,String roll, String thumbnailUrl, String billingaddress,String nameoffrim, String estyear){
+    public Profile(String website,String connectionstatus,String userid,String email,String mobile,String roll, String thumbnailUrl, String billingaddress,String nameoffrim, String estyear){
         this.email=email;
         this.thumbnailUrl = thumbnailUrl;
         this.mobile=mobile;
@@ -23,6 +23,8 @@ public class Profile implements Serializable {
         this.nameoffrim=nameoffrim;
         this.estyear= estyear;
         this.userid=userid;
+        this.friendid=friendid;
+        this.website=website;
 
     }
 
@@ -82,8 +84,14 @@ public class Profile implements Serializable {
     public void setUserid(String userid){ this.userid = userid; }
     public String getUserid() { return  userid; }
 
+    public void setFriendid(String friendidid){ this.friendid = friendidid; }
+    public String getFriendid() { return  friendid; }
+
     public void setConnectionstatus(String status){this.connectionstatus=status;}
     public String getConnectionstatus(){return connectionstatus;}
+
+    public void setWebsite(String website){this.website=website;}
+    public String getWebsite(){return  website;}
 
 
 

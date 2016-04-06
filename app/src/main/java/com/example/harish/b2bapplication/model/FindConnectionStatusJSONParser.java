@@ -61,6 +61,8 @@ public class FindConnectionStatusJSONParser {
                  JSONObject obj = (JSONObject) completeprofile.get(i);
                  if(i==0)
                  {
+                     profile.setFriendid(obj.getString("friend"));
+                    profile.setUserid(obj.getString("user_id"));
                     profile.setConnectionstatus(obj.getString("status"));
                  }
                  if(i==1)
@@ -68,6 +70,7 @@ public class FindConnectionStatusJSONParser {
                      profile.setNameoffrim(obj.getString("nameoffirm"));
                      profile.setEstyear(obj.getString("estyear"));
                      profile.setBillingaddress(obj.getString("billingaddress"));
+                     profile.setWebsite(obj.getString("website"));
                  }
                  if(i == 2) {
 
@@ -76,6 +79,8 @@ public class FindConnectionStatusJSONParser {
                  if(i == 3) {
 
                      profile.setRoll(obj.getString("roll"));
+                     profile.setEmail(obj.getString("email"));
+                     profile.setMobile(obj.getString("mobile"));
                  }
 
              }

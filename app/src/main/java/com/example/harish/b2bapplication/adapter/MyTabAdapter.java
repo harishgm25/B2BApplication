@@ -5,7 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.example.harish.b2bapplication.activity.CatalogFragment;
-import com.example.harish.b2bapplication.activity.FindConnectionFragment;
+import com.example.harish.b2bapplication.activity.FindConnectionGridFragment;
 import com.example.harish.b2bapplication.activity.OrderFragment;
 
 /**
@@ -30,7 +30,7 @@ public class MyTabAdapter  extends FragmentPagerAdapter {
         public Fragment getItem(int position)
         {
             switch (position){
-                        case 0 : return new FindConnectionFragment(usertokens);
+                        case 0 : return new FindConnectionGridFragment(usertokens);
                         case 1 : return new OrderFragment(usertokens);
                         case 2 : return new CatalogFragment(usertokens);
             }

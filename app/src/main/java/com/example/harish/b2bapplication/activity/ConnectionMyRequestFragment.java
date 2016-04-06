@@ -2,6 +2,7 @@ package com.example.harish.b2bapplication.activity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -44,6 +45,7 @@ public class ConnectionMyRequestFragment extends Fragment {
     private String userid;
     private ConnectionRequestListAdapter adapter;
     private ListView listView;
+    private ProgressDialog progressDialog;
     private String s[];
 
 
@@ -83,17 +85,24 @@ public class ConnectionMyRequestFragment extends Fragment {
                 arg.putSerializable("userprofile", profile);
 
 
-                Intent completeProfile= new Intent(getActivity(),ConnectionActivty.class);
+                Intent completeProfile= new Intent(getActivity(),ConnectionApprovedActivty.class);
                 completeProfile.putExtra("ack",ack);
                 completeProfile.putExtra("userid",userid);
                 completeProfile.putExtra("profile",profile);
-                startActivity(completeProfile);
+                startActivityForResult(completeProfile, 1001);
 
 
             }
         });
 
 
+        // Inflate the layout for this fragment
+        getListFromServer();
+        return rootView;
+    }
+
+    public void getListFromServer()
+    {
         ConnectionDetector connectionDetector = new ConnectionDetector(getContext());
         if (connectionDetector.isConnectingToInternet()) {
 
@@ -120,16 +129,14 @@ public class ConnectionMyRequestFragment extends Fragment {
                                 JSONArray profileArray = jsnobject.getJSONArray("myfriendrequest");
                                 FindConnectionStatusJSONParser profileJSONParser = new FindConnectionStatusJSONParser();
                                 profileList = profileJSONParser.parse(profileArray,ip[0]);
-                                String name = "temp";
+                                progressDialog.dismiss();
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
 
-
                             adapter = new ConnectionRequestListAdapter(getActivity(),profileList);
                             listView.setAdapter(adapter);
                             adapter.notifyDataSetChanged();
-
                         }
                     },
                     new Response.ErrorListener()
@@ -137,6 +144,7 @@ public class ConnectionMyRequestFragment extends Fragment {
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             System.out.println(error);
+                            progressDialog.dismiss();
                         }
                     })
             {
@@ -159,6 +167,9 @@ public class ConnectionMyRequestFragment extends Fragment {
 
             RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
             requestQueue.add(postRequest);
+            progressDialog = new ProgressDialog(getActivity());
+            progressDialog.setMessage("Fetching The File....");
+            progressDialog.show();
 
         }
         else
@@ -167,18 +178,17 @@ public class ConnectionMyRequestFragment extends Fragment {
         }
 
 
-
-
-
-
-
-        // Inflate the layout for this fragment
-        return rootView;
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        getListFromServer();
     }
 
     @Override

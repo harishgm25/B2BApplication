@@ -1,9 +1,13 @@
 package com.example.harish.b2bapplication.activity;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -12,6 +16,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -44,7 +50,9 @@ import org.apache.http.entity.mime.content.FileBody;
 import org.json.JSONObject;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -67,6 +75,12 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
         super.onPrepareOptionsMenu(menu);
         return true;
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
 
     }
 
@@ -123,6 +137,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
                 }
             });
+            setRecurringAlarm(this);
     }
 
 
@@ -487,7 +502,26 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             }
         });
     }
-    //----------------Closing the ProgressDialog after given interval-------------------
+
+    private void setRecurringAlarm(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        int minutes = prefs.getInt("interval",1);
+        AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+        Intent i = new Intent(this, NotificationAlaramService.class);
+        PendingIntent pi = PendingIntent.getService(this, 0, i, 0);
+        am.cancel(pi);
+        // by my own convention, minutes <= 0 means notifications are disabled
+        if (minutes > 0) {
+            am.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                    SystemClock.elapsedRealtime() + minutes*60*1000,
+                    minutes*60*1000, pi);
+        }
+    }
+
+
+
+
+        //----------------Closing the ProgressDialog after given interval-------------------
     public void timerDelayRemoveDialog(long time, final Dialog d){
 
         android.os.Handler handler = new android.os.Handler();
