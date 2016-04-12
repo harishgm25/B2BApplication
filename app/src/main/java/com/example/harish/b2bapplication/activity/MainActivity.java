@@ -32,7 +32,6 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import com.example.harish.b2bapplication.R;
 import com.example.harish.b2bapplication.model.NavDrawerItem;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -69,6 +68,8 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
     private  DrawerLayout drawerLayout;
     private String s[];
     private UploadImageAsyncTask uploadImageAsyncTask;
+    private AlarmManager am = null;
+    private PendingIntent pi =null;
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
@@ -137,7 +138,8 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
                 }
             });
-            setRecurringAlarm(this);
+            setRecurringAlarm();
+            getUserHome();
     }
 
 
@@ -174,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             case 1:
                     if(toggletitle.equals("SIGNIN"))
                     {
-                        signinout(toggletitle);
+                      signinout(toggletitle);
                     }
                     else
                     {
@@ -232,6 +234,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                 fragmentTransaction.replace(R.id.container_body, new HomeFragment());
                 fragmentTransaction.commit();
                 drawerLayout.closeDrawer(Gravity.LEFT); // closing DrawerLayOut Manually
+                am.cancel(pi); // cancelling alaram manager service
             } else {
                 SigninFragment s = new SigninFragment();
                 Bundle bundles = new Bundle();
@@ -240,6 +243,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                 fragmentTransaction.replace(R.id.container_body, s);
                 fragmentTransaction.commit();
                 drawerLayout.closeDrawer(Gravity.LEFT); // closing DrawerLayOut Manually
+
 
             }
         }
@@ -261,12 +265,14 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
             if (s == null)
                 userFragment = new HomeFragment();
             else {
+
                 if (s[3].equals("Manufacture"))
                     userFragment = new ManufactureFragment();
                 if (s[3].equals("WholeSaler"))
                     userFragment = new WholeSalerFragment();
                 if (s[3].equals("Retailer"))
                     userFragment = new RetailerFragment();
+
             }
             // Getting User token and in from the file
 
@@ -503,19 +509,21 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         });
     }
 
-    private void setRecurringAlarm(Context context) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        int minutes = prefs.getInt("interval",1);
-        AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
-        Intent i = new Intent(this, NotificationAlaramService.class);
-        PendingIntent pi = PendingIntent.getService(this, 0, i, 0);
-        am.cancel(pi);
-        // by my own convention, minutes <= 0 means notifications are disabled
-        if (minutes > 0) {
-            am.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                    SystemClock.elapsedRealtime() + minutes*60*1000,
-                    minutes*60*1000, pi);
+    //---------------------getting others notification for approval every 60 seconds--------------------------
+    public void setRecurringAlarm() {
+     s = new StoreAck().readFile(getApplicationContext().getApplicationContext());
+        if(s!= null) {
+            am = (AlarmManager) getSystemService(Activity.ALARM_SERVICE);
+            Intent i = new Intent(MainActivity.this, NotificationAlaramService.class);
+            i.putExtra("ack", s[0]);
+            i.putExtra("userid", s[1]);
+            pi = PendingIntent.getBroadcast(MainActivity.this, 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
+            am.cancel(pi);
+            am.setRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime(),
+                        1 * 60 * 60, pi);
+
         }
+
     }
 
 

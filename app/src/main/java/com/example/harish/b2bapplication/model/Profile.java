@@ -93,6 +93,11 @@ public class Profile implements Serializable {
     public void setWebsite(String website){this.website=website;}
     public String getWebsite(){return  website;}
 
+    public void setStatus(String status){this.connectionstatus=status;}
+    public String getStatus(){return  connectionstatus;}
+
+
+
 
 
 

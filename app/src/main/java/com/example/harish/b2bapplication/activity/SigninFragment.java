@@ -1,15 +1,19 @@
 package com.example.harish.b2bapplication.activity;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -67,6 +71,10 @@ public class SigninFragment extends Fragment   {
     private  Bitmap bmp;
 
     private FileOutputStream fos;
+    private String s[];
+    private AlarmManager am = null;
+    private PendingIntent pi =null;
+
 
 
 
@@ -230,8 +238,8 @@ public class SigninFragment extends Fragment   {
     public void onSigninSuccess() {
        // _signin.setEnabled(true);
         Log.d("----------", "SigninSuccess");
-
         callAsyncProfileImageTask();
+
 
 
         //Closing KeyBoard Manually----------------------------------------------
@@ -241,6 +249,7 @@ public class SigninFragment extends Fragment   {
             imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
         }
 
+        setRecurringAlarm();
         //Setting the Fragment Based on The User---------------------------------
         Fragment userFragment = null;
         String s[] = new StoreAck().readFile(getContext().getApplicationContext());
@@ -404,6 +413,26 @@ public class SigninFragment extends Fragment   {
 
             return null;
         }
+    }
+
+    public void setRecurringAlarm() {
+
+        //---------------------getting others request for approval--------------------------
+        s = new StoreAck().readFile(getContext().getApplicationContext());
+
+        if(s!= null) {
+
+            am = (AlarmManager) getActivity().getSystemService(Activity.ALARM_SERVICE);
+            Intent i = new Intent(getActivity(), NotificationAlaramService.class);
+            i.putExtra("ack", s[0]);
+            i.putExtra("userid", s[1]);
+            pi = PendingIntent.getBroadcast(getActivity(), 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
+            am.cancel(pi);
+            am.setRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime(),
+                    1 * 60 * 60, pi);
+
+        }
+
     }
 
 

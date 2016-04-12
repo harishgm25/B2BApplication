@@ -115,14 +115,9 @@ public class FindConnectionGridFragment extends Fragment {
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-
-
                             adapter = new ProfileListAdapter(getActivity(),profileList);
                             listView.setAdapter(adapter);
                             adapter.notifyDataSetChanged();
-
-
-
 
                         }
                     },

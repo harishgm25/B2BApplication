@@ -187,7 +187,6 @@ public class ConnectionMyRequestFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
         getListFromServer();
     }
 
