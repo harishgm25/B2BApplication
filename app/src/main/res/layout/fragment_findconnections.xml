@@ -12,19 +12,58 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="2"
-        android:id="@+id/fragmentcontainer" />
+        android:id="@+id/fragmentcontainer"/>
 
-
-    <GridView
-        android:id="@+id/lv_profiles"
+    <LinearLayout
+        android:id="@+id/buttons"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:numColumns="2"
-        android:verticalSpacing="10dp"
-        android:horizontalSpacing="10dp"
-        android:background="@android:color/white"
-        />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:baselineAligned="false"
+        android:layout_alignParentTop="true">
+
+        <Button
+            android:id="@+id/button_manufacture"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="Manufacture"
+            android:singleLine="true"/>
+
+        <Button
+            android:id="@+id/button_wholesaler"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="Wholesaler"/>
+        <Button
+            android:id="@+id/button_retailer"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="Retailer"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_below="@id/buttons"
+        android:id="@+id/gridview">
+
+        <GridView
+            android:id="@+id/lv_profiles"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:numColumns="2"
+            android:verticalSpacing="10dp"
+            android:horizontalSpacing="10dp"
+            android:background="@android:color/white"/>
+
+    </LinearLayout>
+
 
 </RelativeLayout>

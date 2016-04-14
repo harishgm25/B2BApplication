@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
 
 import com.android.volley.AuthFailureError;
@@ -19,6 +20,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.harish.b2bapplication.adapter.ProfileListAdapter;
 import com.example.harish.b2bapplication.model.FindConnectionJSONParser;
@@ -40,9 +42,14 @@ public class FindConnectionGridFragment extends Fragment {
     private String usertokens [];
     private String ack;
     private String userid;
+    private String roll;
     private ProfileListAdapter adapter;
     private ProgressDialog pDialog;
     private  GridView listView;
+    private Button manufactureButton;
+    private Button retailerButton;
+    private Button wholesalerButton;
+
     private FindConnectionGridFragment findConnectionGridFragment;
 
 
@@ -66,9 +73,26 @@ public class FindConnectionGridFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_findconnections, container, false);
-
+        manufactureButton = (Button)rootView.findViewById(R.id.button_manufacture);
+        retailerButton =(Button)rootView.findViewById(R.id.button_retailer);
+        wholesalerButton = (Button)rootView.findViewById(R.id.button_wholesaler);
         ack = usertokens[0];
         userid= usertokens[1];
+        roll = usertokens[3];
+
+        //---------- Disable the button for rolls--------
+        if(roll.equals("Manufacture")) {
+            manufactureButton.setEnabled(false);
+
+        }
+        if(roll.equals("WholeSaler")) {
+            wholesalerButton.setEnabled(false);
+        }
+        if(roll.equals("Retailer")) {
+            retailerButton.setEnabled(false);
+        }
+
+
         listView = (GridView)rootView.findViewById(R.id.lv_profiles);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -92,22 +116,56 @@ public class FindConnectionGridFragment extends Fragment {
         });
 
 
+        // Filtering the user from the original data for the server using Filterable Adapter-------------
+        manufactureButton.setOnClickListener(new View.OnClickListener() {
+                                                 @Override
+                                                 public void onClick(View v) {
+                                                     adapter.getFilter().filter("Manufacture");
+                                                 }
+                                             }
+        );
+
+        retailerButton.setOnClickListener(new View.OnClickListener() {
+                                                 @Override
+                                                 public void onClick(View v) {
+                                                     adapter.getFilter().filter("Retailer");
+                                                 }
+                                             }
+        );
+        wholesalerButton.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    adapter.getFilter().filter("WholeSaler");
+                                                }
+                                            }
+        );
+
+
+        //------- Fetching the Connections based on user roll
+        // for the Server and loading to Adapter for processing-----------
         ConnectionDetector connectionDetector = new ConnectionDetector(getContext());
         if (connectionDetector.isConnectingToInternet()) {
 
             String[] ip = getActivity().getResources().getStringArray(R.array.ip_address);
-            StringRequest postRequest = new StringRequest(Request.Method.POST, ip[0]+"api/v1/profiles/showconnectionprofile",
-                    new Response.Listener<String>()
+            JSONObject holderData = new JSONObject();
+            JSONObject childData = new JSONObject();
+            try {
+                childData.put("roll",roll);
+                holderData.put("profile", childData);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            JsonObjectRequest postRequest = new JsonObjectRequest(Request.Method.POST, ip[0]+"api/v1/profiles/showconnectionprofile",holderData,
+                    new Response.Listener<JSONObject>()
                     {
                         String[] ip = getActivity().getResources().getStringArray(R.array.ip_address);
                         List profileList;
                         @Override
-                        public void onResponse(String response) {
-                            // response
-                           // Log.d("Response+++===", response);
+                        public void onResponse(JSONObject response) {
+
                             JSONObject jsnobject = null;
                             try {
-                                jsnobject = new JSONObject(response);
+                                jsnobject = response;
                                 JSONArray profileArray = jsnobject.getJSONArray("profile");
                                 FindConnectionJSONParser profileJSONParser = new FindConnectionJSONParser();
                                 profileList = profileJSONParser.parse(profileArray,ip[0]);
@@ -141,6 +199,8 @@ public class FindConnectionGridFragment extends Fragment {
 
                     return params;
                 }
+
+
             };
             RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
             requestQueue.add(postRequest);

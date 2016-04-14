@@ -51,7 +51,7 @@ public class ManufactureFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-      //  View rootView = inflater.inflate(R.layout.fragment_order, container, false);
+
         View tabView =  inflater.inflate(R.layout.tab_layout,null);
         tabLayout = (TabLayout) tabView.findViewById(R.id.tabs);
         viewPager = (ViewPager) tabView.findViewById(R.id.viewpager);
