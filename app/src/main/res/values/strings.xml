@@ -33,16 +33,11 @@
 
     <!--   http://173.255.199.232:8002/    -->
     <string-array name="ip_address">
-          <item>"http://116.202.144.144:3000/</item>
+          <item>"http://173.255.199.232:8002/</item>
 
     </string-array>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-
-
-
-
-
 
 </resources>

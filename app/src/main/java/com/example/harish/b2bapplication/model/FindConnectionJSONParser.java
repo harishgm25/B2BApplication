@@ -66,6 +66,9 @@ public class FindConnectionJSONParser {
                      profile.setNameoffrim(obj.getString("nameoffirm"));
                      profile.setEstyear(obj.getString("estyear"));
                      profile.setBillingaddress(obj.getString("billingaddress"));
+                     profile.setPan(obj.getString("pan"));
+                     profile.setTanvat(obj.getString("tanvat"));
+                     profile.setBankAcc(obj.getString("bankacc"));
 
                  }
                  if(i == 1) {

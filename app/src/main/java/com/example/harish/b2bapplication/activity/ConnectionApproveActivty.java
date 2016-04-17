@@ -4,6 +4,7 @@ package com.example.harish.b2bapplication.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.support.v4.app.FragmentManager;
@@ -45,7 +46,11 @@ public class ConnectionApproveActivty extends ActionBarActivity
         TextView email;
         TextView website;
         TextView mobile;
-        Button connectButton;
+        TextView bankAcc;
+        TextView pan;
+        TextView tanvat;
+       // Button connectButton;
+        FloatingActionButton connectButton;
         private ConnectionOthersRequestFragment connectionOthersRequestFragment;
 
 
@@ -65,7 +70,10 @@ public class ConnectionApproveActivty extends ActionBarActivity
             website = (TextView) findViewById(R.id.website);
             email =(TextView) findViewById(R.id.email);
             billingaadress = (TextView) findViewById(R.id.billingaddress);
-            connectButton = (Button) findViewById(R.id.connectButton);
+            connectButton = (FloatingActionButton) findViewById(R.id.fab);
+            pan = (TextView)findViewById(R.id.pan);
+            tanvat =(TextView)findViewById(R.id.tanvat);
+            bankAcc =(TextView)findViewById(R.id.bankacc);
 
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -92,7 +100,14 @@ public class ConnectionApproveActivty extends ActionBarActivity
                     email.setText(profile.getEmail());
                     mobile.setText(profile.getMobile());
                     website.setText(profile.getWebsite());
-                    connectButton.setText("REMOVE");
+                    pan.setText(profile.getPan());
+                    bankAcc.setText(profile.getBankAcc());
+                    tanvat.setText(profile.getTanvat());
+
+                    connectButton.setEnabled(false);
+                    //connectButton.setImageResource(R.drawable.ic_action_remove);
+                   // connectButton.refreshDrawableState();
+
                 }
                 else
                 {

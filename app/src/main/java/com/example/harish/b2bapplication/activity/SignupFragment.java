@@ -81,7 +81,7 @@ public class SignupFragment extends Fragment {
 
          // Filling the Spinner
          roll = (Spinner) rootView.findViewById(R.id.roll);
-         String [] rolls = {"Manufacture","WholeSaler","Retailer"};
+         String [] rolls = {"Manufacture","Wholesaler","Retailer"};
          ArrayAdapter<String> LTRadapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, rolls);
          LTRadapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
          roll.setAdapter(LTRadapter);
@@ -210,7 +210,7 @@ public class SignupFragment extends Fragment {
         String s[] = new StoreAck().readFile(getContext().getApplicationContext());
         if(s[3].equals("Manufacture"))
             userFragment = new ManufactureFragment();
-        if(s[3].equals("WholeSaler"))
+        if(s[3].equals("Wholesaler"))
             userFragment = new WholeSalerFragment();
         if(s[3].equals("Retailer"))
             userFragment = new RetailerFragment();

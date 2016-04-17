@@ -85,7 +85,7 @@ public class FindConnectionGridFragment extends Fragment {
             manufactureButton.setEnabled(false);
 
         }
-        if(roll.equals("WholeSaler")) {
+        if(roll.equals("Wholesaler")) {
             wholesalerButton.setEnabled(false);
         }
         if(roll.equals("Retailer")) {
@@ -135,7 +135,7 @@ public class FindConnectionGridFragment extends Fragment {
         wholesalerButton.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
-                                                    adapter.getFilter().filter("WholeSaler");
+                                                    adapter.getFilter().filter("Wholesaler");
                                                 }
                                             }
         );

@@ -268,7 +268,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
 
                 if (s[3].equals("Manufacture"))
                     userFragment = new ManufactureFragment();
-                if (s[3].equals("WholeSaler"))
+                if (s[3].equals("Wholesaler"))
                     userFragment = new WholeSalerFragment();
                 if (s[3].equals("Retailer"))
                     userFragment = new RetailerFragment();

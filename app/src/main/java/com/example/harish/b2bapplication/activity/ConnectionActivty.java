@@ -2,6 +2,7 @@ package com.example.harish.b2bapplication.activity;
 
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -36,7 +37,7 @@ public class ConnectionActivty extends ActionBarActivity {
     TextView firmname;
     TextView estyear;
     TextView billingaadress;
-    Button connectButton;
+    FloatingActionButton connectButton;
 
 
     public ConnectionActivty() {
@@ -52,7 +53,7 @@ public class ConnectionActivty extends ActionBarActivity {
         firmname =(TextView) findViewById(R.id.firmname);
         estyear =(TextView) findViewById(R.id.estyear);
         billingaadress =(TextView) findViewById(R.id.billingaddress);
-        connectButton = (Button) findViewById(R.id.connectButton);
+        connectButton = (FloatingActionButton) findViewById(R.id.fab);
 
 
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);

@@ -4,17 +4,21 @@ package com.example.harish.b2bapplication.model;
  * Created by harish on 30/3/16.
  */
 import java.io.Serializable;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
+
 
 public class Profile implements Serializable {
     private String email,mobile, thumbnailUrl,billingaddress,nameoffrim,estyear,roll;
     private String userid,friendid,connectionstatus,website;
+    private String pan, bankAcc, tanvat;
 
 
     public Profile() {
     }
 
-    public Profile(String website,String connectionstatus,String userid,String email,String mobile,String roll, String thumbnailUrl, String billingaddress,String nameoffrim, String estyear){
+    public Profile(String tanvat,String bankAcc,String pan,String website,String connectionstatus,String userid,String email,String mobile,String roll, String thumbnailUrl, String billingaddress,String nameoffrim, String estyear){
         this.email=email;
         this.thumbnailUrl = thumbnailUrl;
         this.mobile=mobile;
@@ -25,6 +29,10 @@ public class Profile implements Serializable {
         this.userid=userid;
         this.friendid=friendid;
         this.website=website;
+        this.connectionstatus=connectionstatus;
+        this.bankAcc=bankAcc;
+        this.tanvat=tanvat;
+        this.pan=pan;
 
     }
 
@@ -95,6 +103,19 @@ public class Profile implements Serializable {
 
     public void setStatus(String status){this.connectionstatus=status;}
     public String getStatus(){return  connectionstatus;}
+
+
+    public void setPan(String pan){this.pan=pan;}
+    public String getPan(){return  pan;}
+
+    public void setBankAcc(String bankAcc){this.bankAcc=bankAcc;}
+    public String getBankAcc(){return  bankAcc;}
+
+    public void setTanvat(String tanvat){this.tanvat=tanvat;}
+    public String getTanvat(){return  tanvat;}
+
+
+
 
 
 

@@ -78,7 +78,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPersonName"
-                android:hint="NameofFrim" />
+                android:hint="NameofFirm" />
         </android.support.design.widget.TextInputLayout>
 
             <!--  ESTYear Label -->
