@@ -3,6 +3,7 @@ package com.example.harish.b2bapplication.activity;
 
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBarActivity;
@@ -103,10 +104,10 @@ public class ConnectionApproveActivty extends ActionBarActivity
                     pan.setText(profile.getPan());
                     bankAcc.setText(profile.getBankAcc());
                     tanvat.setText(profile.getTanvat());
-
-                    connectButton.setEnabled(false);
-                    //connectButton.setImageResource(R.drawable.ic_action_remove);
-                   // connectButton.refreshDrawableState();
+                    connectButton.setTag("delete");
+                   // connectButton.setEnabled(false);
+                    connectButton.setImageResource(R.drawable.ic_action_remove);
+                    connectButton.refreshDrawableState();
 
                 }
                 else
@@ -125,7 +126,14 @@ public class ConnectionApproveActivty extends ActionBarActivity
 
                     ConnectionDetector connectionDetector = new ConnectionDetector(getApplicationContext());
                     if (connectionDetector.isConnectingToInternet()) {
+
+                        String action  = (String)connectButton.getTag();
+
+                        if(action.equals("delete"))
+                            removefriendConnectionRequest();
+                        else
                         friendConnectionRequest();
+
                     } else {
                         connectionDetector.showConnectivityStatus();
                     }
@@ -183,6 +191,45 @@ public class ConnectionApproveActivty extends ActionBarActivity
 
 
     }
+        public void removefriendConnectionRequest() {
+            connectButton.setEnabled(false);
+            AsyncHttpClient client = new AsyncHttpClient();
+            String[] ip = getApplication().getResources().getStringArray(R.array.ip_address);
+            client.addHeader("Authorization", "Token token=\"" + ack + "\"");
+            RequestParams param = new RequestParams();
+            try {
+                param.put("findconnection[user_id]", userId);
+                param.put("findconnection[friend]", friendUserId);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            Toast.makeText(ConnectionApproveActivty.this, "Request Connection Sending", Toast.LENGTH_LONG).show();
+            client.post(ip[0] + "api/v1/findconnections/removeotherfriendrequeststatus", param, new JsonHttpResponseHandler() {
+
+                @Override
+                public void onStart() {
+                    super.onStart();
+                    Toast.makeText(ConnectionApproveActivty.this, "Request Connection Sending", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    super.onSuccess(statusCode, headers, response);
+                    Toast.makeText(ConnectionApproveActivty.this, "Request Connection Send", Toast.LENGTH_SHORT).show();
+                    ConnectionApproveActivty.this.finish();
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    super.onFailure(statusCode, headers, responseString, throwable);
+                    Toast.makeText(ConnectionApproveActivty.this, "Request Connection Failed", Toast.LENGTH_SHORT).show();
+                    connectButton.setEnabled(true);
+                    ConnectionApproveActivty.this.finish();
+                }
+            });
+
+
+        }
 
     @Override
     protected void onDestroy() {

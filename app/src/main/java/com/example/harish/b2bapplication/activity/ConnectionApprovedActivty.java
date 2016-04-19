@@ -1,6 +1,7 @@
 package com.example.harish.b2bapplication.activity;
 
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBarActivity;
@@ -103,7 +104,7 @@ public class ConnectionApprovedActivty extends ActionBarActivity
                     pan.setText(profile.getPan());
                     bankAcc.setText(profile.getBankAcc());
                     tanvat.setText(profile.getTanvat());
-
+                    connectButton.setBackgroundColor(Color.RED);
                     connectButton.setImageResource(R.drawable.ic_action_remove);
                     connectButton.refreshDrawableState();
                     connectButton.setEnabled(true);
@@ -126,7 +127,7 @@ public class ConnectionApprovedActivty extends ActionBarActivity
 
                     ConnectionDetector connectionDetector = new ConnectionDetector(getApplicationContext());
                     if (connectionDetector.isConnectingToInternet()) {
-                        friendConnectionRequest();
+                        removefriendConnectionRequest();
                     } else {
                         connectionDetector.showConnectivityStatus();
                     }
@@ -136,7 +137,7 @@ public class ConnectionApprovedActivty extends ActionBarActivity
          }
 
 
-    public void friendConnectionRequest() {
+    public void removefriendConnectionRequest() {
         connectButton.setEnabled(false);
         AsyncHttpClient client = new AsyncHttpClient();
         String[] ip = getApplication().getResources().getStringArray(R.array.ip_address);

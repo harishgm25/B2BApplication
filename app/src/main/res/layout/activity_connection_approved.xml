@@ -298,8 +298,9 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:scaleType="fitXY"
         android:clickable="true"
         android:src="@drawable/ic_action_add"
         app:layout_anchor="@id/scrollView"

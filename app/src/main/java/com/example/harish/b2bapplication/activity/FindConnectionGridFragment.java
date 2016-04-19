@@ -13,8 +13,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -81,7 +83,7 @@ public class FindConnectionGridFragment extends Fragment {
         roll = usertokens[3];
 
         //---------- Disable the button for rolls--------
-        if(roll.equals("Manufacture")) {
+        if(roll.equals("Manufacturer")) {
             manufactureButton.setEnabled(false);
 
         }
@@ -120,7 +122,8 @@ public class FindConnectionGridFragment extends Fragment {
         manufactureButton.setOnClickListener(new View.OnClickListener() {
                                                  @Override
                                                  public void onClick(View v) {
-                                                     adapter.getFilter().filter("Manufacture");
+                                                     if(adapter!=null)
+                                                     adapter.getFilter().filter("Manufacturer");
                                                  }
                                              }
         );
@@ -128,6 +131,7 @@ public class FindConnectionGridFragment extends Fragment {
         retailerButton.setOnClickListener(new View.OnClickListener() {
                                                  @Override
                                                  public void onClick(View v) {
+                                                     if(adapter!=null)
                                                      adapter.getFilter().filter("Retailer");
                                                  }
                                              }
@@ -135,6 +139,7 @@ public class FindConnectionGridFragment extends Fragment {
         wholesalerButton.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
+                                                    if(adapter!=null)
                                                     adapter.getFilter().filter("Wholesaler");
                                                 }
                                             }
@@ -183,7 +188,7 @@ public class FindConnectionGridFragment extends Fragment {
                     {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            // error
+                            Toast.makeText(getContext(), "Check Connectivity", Toast.LENGTH_LONG).show();
                             Log.d("Error.Response",error.toString());
                             pDialog.dismiss();
                         }
@@ -202,6 +207,9 @@ public class FindConnectionGridFragment extends Fragment {
 
 
             };
+            postRequest.setRetryPolicy(new DefaultRetryPolicy(10000,
+                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
             requestQueue.add(postRequest);
             pDialog = new ProgressDialog(getActivity());

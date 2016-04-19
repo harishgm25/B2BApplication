@@ -234,7 +234,8 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                 fragmentTransaction.replace(R.id.container_body, new HomeFragment());
                 fragmentTransaction.commit();
                 drawerLayout.closeDrawer(Gravity.LEFT); // closing DrawerLayOut Manually
-                am.cancel(pi); // cancelling alaram manager service
+                if(am!=null)
+                  am.cancel(pi); // cancelling alaram manager service
             } else {
                 SigninFragment s = new SigninFragment();
                 Bundle bundles = new Bundle();
@@ -266,7 +267,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
                 userFragment = new HomeFragment();
             else {
 
-                if (s[3].equals("Manufacture"))
+                if (s[3].equals("Manufacturer"))
                     userFragment = new ManufactureFragment();
                 if (s[3].equals("Wholesaler"))
                     userFragment = new WholeSalerFragment();
@@ -484,7 +485,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         client.setTimeout(30 * 10000);
 
         client.addHeader("Authorization", "Token token=\"" + ack + "\"");
-        client.post(ip[0] + "api/v1/profiles/updateprofile", params, new JsonHttpResponseHandler() {
+        client.post(ip[0] + "api/v1/profiles/updateprofileimage", params, new JsonHttpResponseHandler() {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {

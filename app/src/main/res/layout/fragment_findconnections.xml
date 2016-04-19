@@ -27,7 +27,7 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:text="Manufacture"
+            android:text="Manufacturer"
             android:singleLine="true"/>
 
         <Button
@@ -55,12 +55,13 @@
         <GridView
             android:id="@+id/lv_profiles"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:numColumns="2"
             android:verticalSpacing="10dp"
             android:horizontalSpacing="10dp"
+            android:stretchMode="columnWidth"
             android:background="@android:color/white"/>
 
     </LinearLayout>

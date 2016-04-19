@@ -253,7 +253,7 @@ public class SigninFragment extends Fragment   {
         //Setting the Fragment Based on The User---------------------------------
         Fragment userFragment = null;
         String s[] = new StoreAck().readFile(getContext().getApplicationContext());
-        if (s[3].equals("Manufacture"))
+        if (s[3].equals("Manufacturer"))
             userFragment = new ManufactureFragment();
         if (s[3].equals("Wholesaler"))
             userFragment = new WholeSalerFragment();
