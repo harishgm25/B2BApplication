@@ -6,7 +6,7 @@ android {
     useLibrary 'org.apache.http.legacy'
     defaultConfig {
         applicationId "com.example.harish.b2bapplication"
-        minSdkVersion 21
+        minSdkVersion 19
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -22,6 +22,8 @@ android {
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/LICENSE'
     }
+    productFlavors {
+    }
 }
 
 dependencies {
@@ -34,6 +36,7 @@ dependencies {
     compile 'com.google.code.gson:gson:2.2.+'
     compile 'com.jakewharton:butterknife:6.1.0'
     compile 'com.msg91.sendotp.library:library:2.2'
+    compile "com.google.android.gms:play-services-gcm:8.4.0"
 
 }
 repositories {

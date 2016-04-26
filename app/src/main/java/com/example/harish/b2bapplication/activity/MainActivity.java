@@ -27,6 +27,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.style.BulletSpan;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -113,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements FragmentDrawer.Fr
         } catch (NoSuchAlgorithmException e) {
 
         }
-        //   Log.i("SecretKey = ",Base64.encodeToString(md.digest(), Base64.DEFAULT));
+         Log.i("SecretKey = ", Base64.encodeToString(md.digest(), Base64.DEFAULT));
         //---------------------------------------------------------------------------------
             drawerFragment = (FragmentDrawer) getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
             drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), mToolbar);

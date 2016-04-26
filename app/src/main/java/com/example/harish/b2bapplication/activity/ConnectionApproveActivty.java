@@ -72,6 +72,7 @@ public class ConnectionApproveActivty extends ActionBarActivity
             email =(TextView) findViewById(R.id.email);
             billingaadress = (TextView) findViewById(R.id.billingaddress);
             connectButton = (FloatingActionButton) findViewById(R.id.fab);
+            connectButton.setTag("approve");
             pan = (TextView)findViewById(R.id.pan);
             tanvat =(TextView)findViewById(R.id.tanvat);
             bankAcc =(TextView)findViewById(R.id.bankacc);

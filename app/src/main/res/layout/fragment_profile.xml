@@ -31,55 +31,77 @@
             android:layout_height="match_parent"
             android:layout_above="@id/buttons" >
 
-
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="56dp"
+            android:paddingTop="0dp"
             android:paddingLeft="24dp"
             android:paddingRight="24dp">
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:text="General Details"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:paddingLeft="5dp"
+                android:gravity="center_vertical"
+                android:background="@android:color/darker_gray"/>
 
 
-    <!--  First Name Label -->
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/firstname"
+
+                <!--  First Name Label -->
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName"
-                android:hint="FirstName" />
-        </android.support.design.widget.TextInputLayout>
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp">
+                <EditText android:id="@+id/firstname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:hint="FirstName" />
+            </android.support.design.widget.TextInputLayout>
 
-        <!--  Last Name Label -->
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/lastname"
+            <!--  Last Name Label -->
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName"
-                android:hint="LastName" />
-        </android.support.design.widget.TextInputLayout>
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp">
+                <EditText android:id="@+id/lastname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:hint="LastName" />
+            </android.support.design.widget.TextInputLayout>
 
-        <!--  Nameoffrim Label -->
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/nameoffirm"
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:text="Business Details"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:paddingLeft="5dp"
+                android:gravity="center_vertical"
+                android:background="@android:color/darker_gray"/>
+
+
+            <!--  Nameoffrim Label -->
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName"
-                android:hint="NameofFirm" />
-        </android.support.design.widget.TextInputLayout>
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp">
+                <EditText android:id="@+id/nameoffirm"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:hint="NameofFirm" />
+            </android.support.design.widget.TextInputLayout>
 
             <!--  ESTYear Label -->
             <android.support.design.widget.TextInputLayout
@@ -149,7 +171,21 @@
             </android.support.design.widget.TextInputLayout>
 
 
-        <!--  Billing Address Label -->
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:text="Address Details"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:paddingLeft="5dp"
+                android:gravity="center_vertical"
+                android:background="@android:color/darker_gray"/>
+
+
+
+            <!--  Billing Address Label -->
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -185,11 +221,6 @@
                     android:scrollHorizontally="false"
                     android:hint="Delivery Address" />
             </android.support.design.widget.TextInputLayout>
-
-
-
-
-
 
         </LinearLayout>
         </ScrollView>
